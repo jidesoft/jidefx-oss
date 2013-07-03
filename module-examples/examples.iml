@@ -18,11 +18,9 @@
     <orderEntry type="module" module-name="fields" />
     <orderEntry type="module" module-name="jdk-changes" />
     <orderEntry type="module" module-name="miglayout" />
-    <orderEntry type="module" module-name="properties" />
     <orderEntry type="module" module-name="UIControlSamples" />
     <orderEntry type="module" module-name="validation" />
     <orderEntry type="library" name="commons-validator" level="project" />
-    <orderEntry type="library" name="aquafx" level="project" />
   </component>
 </module>
 

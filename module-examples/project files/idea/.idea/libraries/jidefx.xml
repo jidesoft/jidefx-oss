@@ -1,12 +1,12 @@
 <component name="libraryTable">
   <library name="jidefx">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/lib/jidefx-common-0.9.2.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/jidefx-comparators-0.9.2.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/jidefx-converters-0.9.2.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/jidefx-decoration-0.9.2.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/jidefx-fields-0.9.2.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/jidefx-validation-0.9.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jidefx-common-0.9.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jidefx-comparators-0.9.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jidefx-converters-0.9.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jidefx-decoration-0.9.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jidefx-fields-0.9.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jidefx-validation-0.9.1.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

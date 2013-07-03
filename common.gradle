@@ -157,20 +157,15 @@ task sourceJar(type: Jar) {
     archiveName = FILE_SOURCE_JAR
     destinationDir = file("${projectDir}/${PATH_DIST}")
     from sourceSets.main.allSource
-    classifier = 'source'
+    classifier = 'sources'
 }
 
 task assemble(overwrite: true, dependsOn: [classJar, javadocJar, sourceJar]) {
 }
     
 artifacts {
-    archives(javadocJar) {
-				type = 'javadoc'
-    }
-    
-    archives(sourceJar) {
-				type = 'source'
-    }
+    archives(javadocJar)
+    archives(sourceJar)
 }
 
 signing {

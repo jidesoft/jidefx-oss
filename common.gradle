@@ -1,0 +1,225 @@
+def DSTAMP = new Date()
+def TSTAMP = new Date()
+
+def MODULE_NAME = project.name.substring("module-".length())
+def DIST_NAME = "${DIST_PREFIX}" + MODULE_NAME + "-${VERSION}"
+def FILE_CLASS_JAR = DIST_NAME + "${DIST_SUFFIX}"
+def PATH_JAVADOC_TEMP = "build/src/javadoc/" + MODULE_NAME
+def FILE_JAVADOC_JAR = DIST_NAME + "${DIST_JAVADOC_SUFFIX}" + "${DIST_SUFFIX}"
+def PATH_SOURCE_TEMP = "build/src/source/" + MODULE_NAME
+def FILE_SOURCE_JAR = DIST_NAME + "${DIST_SOURCE_SUFFIX}" + "${DIST_SUFFIX}"
+
+dependencies {
+    compile files("${JDK_HOME}/jre/lib/ext/jfxrt.jar")
+    testCompile 'org.hamcrest:hamcrest-core:1.3'
+    testCompile 'junit:junit-dep:4.11'
+    testCompile 'junit:junit:4.11'
+}
+
+tasks.withType(Test) {
+    scanForTestClasses = false
+    include "**/*Test.class"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+         }
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+}
+
+defaultTasks = ['assemble']
+
+task cleanClass (type: Delete) {
+    delete "${projectDir}/${PATH_DIST}/" + FILE_CLASS_JAR
+}
+
+task cleanJavadoc (type: Delete) {
+    delete PATH_JAVADOC_TEMP
+    delete "${projectDir}/${PATH_DIST}/" + FILE_JAVADOC_JAR
+}
+
+task cleanSource (type: Delete) {
+    delete "${projectDir}/${PATH_DIST}/" + FILE_SOURCE_JAR
+}
+
+def MANIFEST_MAIN_CLASSES = [
+        "module-common":
+                "jidefx.utils.Version",
+]
+def MANIFEST_CLASSPATHES = [
+        "module-decoration":
+                "${DIST_PREFIX}common-${VERSION}${DIST_SUFFIX}",
+        "module-fields":
+                "miglayout-core-4.2.jar, " +
+                "miglayout-javafx-4.2.jar, " +
+                "${DIST_PREFIX}common-${VERSION}${DIST_SUFFIX}, " +
+                "${DIST_PREFIX}converters-${VERSION}${DIST_SUFFIX}, " +
+                "${DIST_PREFIX}decoration-${VERSION}${DIST_SUFFIX}",
+        "module-validation":
+                "${DIST_PREFIX}common-${VERSION}${DIST_SUFFIX}, " +
+                "${DIST_PREFIX}decoration-${VERSION}${DIST_SUFFIX}"
+]
+def MANIFEST_IMPORTS = [
+        "module-decoration":
+                "jidefx.animation, " +
+                "jidefx.utils, " +
+                "com.jidefx.utils",
+        "module-fields":
+                "net.miginfocom.layout, " +
+                "org.tbee.javafx.scene.layout, " +
+                "com.jidefx.utils, " +
+                "jidefx.scene.control.decoration, " +
+                "jidefx.scene.control.popup, " +
+                "jidefx.utils",
+        "module-validation":
+                "jidefx.animation, " +
+                "jidefx.scene.control.popup, " +
+                "jidefx.utils, " +
+                "jidefx.scene.control.decoration, " +
+                "com.jidefx.utils",
+]
+def MANIFEST_EXPORTS = [
+        "module-common":
+                "jidefx.animation, " +
+                "jidefx.scene.control.hints, " +
+                "jidefx.scene.control.popup, " +
+                "jidefx.scene.control.searchable, " +
+                "jidefx.utils",
+        "module-comparators":
+                "jidefx.utils.comparator",
+        "module-converters":
+                "jidefx.utils.converter",
+        "module-decoration":
+                "jidefx.scene.control.decoration",
+        "module-fields":
+                "jidefx.scene.control.combobox, " +
+                "jidefx.scene.control.field",
+        "module-validation":
+                "jidefx.scene.control.validation",
+]
+
+def MANIFEST_MAIN_CLASS = MANIFEST_MAIN_CLASSES.get(project.name) == null ? " " : MANIFEST_MAIN_CLASSES.get(project.name)
+def MANIFEST_CLASSPATH = MANIFEST_CLASSPATHES.get(project.name) == null ? " " : MANIFEST_CLASSPATHES.get(project.name)
+def MANIFEST_IMPORT = MANIFEST_IMPORTS.get(project.name) == null ? " " : MANIFEST_IMPORTS.get(project.name)
+def MANIFEST_EXPORT = MANIFEST_EXPORTS.get(project.name) == null ? " " : MANIFEST_EXPORTS.get(project.name)
+
+task classJar(type: Jar) {
+    archiveName = FILE_CLASS_JAR
+    destinationDir = file("${projectDir}/${PATH_DIST}")
+    from sourceSets.main.output
+    exclude('com/fxexperience/javafx/util')
+    includeEmptyDirs = false
+    manifest {
+        attributes(
+            "Company": "${COMPANY_NAME}",
+            "JideFX-Version": "${VERSION}",
+            "Main-Class": MANIFEST_MAIN_CLASS,
+            "Class-Path": MANIFEST_CLASSPATH,
+            "Build-Date": DSTAMP,
+            "Build-Time": TSTAMP,
+
+            // Headers for OSGi
+            "Bundle-Vendor": "${COMPANY_NAME}",
+            "Bundle-SymbolicName": "jidefx." + MODULE_NAME,
+            "Bundle-Version": "${VERSION}",
+            "Import-Package": MANIFEST_IMPORT,
+            "Export-Package": MANIFEST_EXPORT,
+        )
+    }
+}
+
+task filterJavadoc(type: Copy) {
+    from sourceSets.main.java
+    into PATH_JAVADOC_TEMP
+    filter { line -> line.replaceAll('<p/>', '<p>') }
+    includeEmptyDirs = false
+}
+
+task compileJavadoc(type: Javadoc, dependsOn: filterJavadoc) {
+    source PATH_JAVADOC_TEMP
+    destinationDir = file("${projectDir}/${PATH_JAVADOC_OUTPUT}")
+    classpath = sourceSets.main.compileClasspath
+}
+
+task javadocJar(type: Jar) {
+    archiveName = FILE_JAVADOC_JAR
+    destinationDir = file("${projectDir}/${PATH_DIST}")
+    from compileJavadoc.outputs
+    classifier = 'javadoc'
+}
+
+task sourceJar(type: Jar) {
+    archiveName = FILE_SOURCE_JAR
+    destinationDir = file("${projectDir}/${PATH_DIST}")
+    from sourceSets.main.allSource
+    classifier = 'source'
+}
+
+task assemble(overwrite: true, dependsOn: [classJar, javadocJar, sourceJar]) {
+}
+    
+artifacts {
+    archives(javadocJar) {
+				type = 'javadoc'
+    }
+    
+    archives(sourceJar) {
+				type = 'source'
+    }
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signPom(deployment) }
+ 
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+              	authentication(userName: "${SONATYPE_USERNAME}", password: "${SONATYPE_PASSWORD}")
+            }
+ 
+            pom.artifactId = "${DIST_PREFIX}" + MODULE_NAME
+            
+            pom.project {
+               name "${DIST_PREFIX}" + MODULE_NAME
+               description 'JideFX Common Layer is a collection of several extend feature for JavaFX'
+               url 'http://github.com/jidesoft/jidefx-oss'
+ 
+               scm {
+                   url 'scm:git@github.com:jidesoft/jidefx-oss.git'
+                   connection 'scm:git@github.com:jidesoft/jidefx-oss.git'
+                   developerConnection 'scm:git@github.com:jidesoft/jidefx-oss.git'
+               }
+ 
+               licenses {
+                   license {
+                       name 'GPL with classpath exception'
+                       url 'http://www.gnu.org/licenses/gpl.txt'
+                       distribution 'repo'
+                   }
+                   license {
+                       name 'Free commercial license'
+                       url 'http://www.jidesoft.com/purchase/SLA.htm'
+                       distribution 'repo'
+                   }
+               }
+ 
+               developers {
+                   developer {
+                       id 'jidesoft'
+                       name 'jidesoft'
+                       email 'support@jidesoft.com'
+                   }
+               }
+           }
+        }
+    }
+}

@@ -1,0 +1,99 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    jdk
+}
+
+version = '0.9.1'
+
+defaultTasks = ['runTextField']
+
+dependencies {
+    compile files("lib/jidefx-common-" + version + ".jar")
+    compile files("lib/jidefx-comparators-" + version + ".jar")
+    compile files("lib/jidefx-converters-" + version + ".jar")
+    compile files("lib/jidefx-decoration-" + version + ".jar")
+    compile files("lib/jidefx-fields-" + version + ".jar")
+    compile files("lib/jidefx-validation-" + version + ".jar")
+    compile group: 'com.miglayout', name: 'miglayout-core', version: '4.2'
+    compile group: 'com.miglayout', name: 'miglayout-javafx', version: '4.2'
+    compile group: 'commons-validator', name: 'commons-validator', version: '1.4.0'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'examples/src'
+            output.classesDir = 'build/classes/main'
+        }
+        resources {
+            srcDir 'examples/src'
+            output.resourcesDir = 'build/classes/main'
+        }
+    }
+}
+
+task runTextField (type: JavaExec, dependsOn: classes) {
+    main = 'jidefx.examples.fields.TextFieldsDemo'
+    classpath = sourceSets.main.runtimeClasspath
+    args ''
+}
+
+task runSpinner (type: JavaExec, dependsOn: classes) {
+    main = 'jidefx.examples.fields.SpinnerStyleDemo'
+    classpath = sourceSets.main.runtimeClasspath
+    args ''
+}
+
+task runComboBox (type: JavaExec, dependsOn: classes) {
+    main = 'jidefx.examples.combobox.ComboBoxesDemo'
+    classpath = sourceSets.main.runtimeClasspath
+    args ''
+}
+
+task runDecoration (type: JavaExec, dependsOn: classes) {
+    main = 'jidefx.examples.decoration.DecorationDemo'
+    classpath = sourceSets.main.runtimeClasspath
+    args ''
+}
+
+task runValidation (type: JavaExec, dependsOn: classes) {
+    main = 'jidefx.examples.decoration.ValidationDemo'
+    classpath = sourceSets.main.runtimeClasspath
+    args ''
+}
+
+task runShapes (type: JavaExec, dependsOn: classes) {
+    main = 'jidefx.examples.shapes.ShapesDemo'
+    classpath = sourceSets.main.runtimeClasspath
+    args ''
+}
+
+task runSearchable (type: JavaExec, dependsOn: classes) {
+    main = 'jidefx.examples.searchable.SearchableDemo'
+    classpath = sourceSets.main.runtimeClasspath
+    args ''
+}
+
+task runAnimation (type: JavaExec, dependsOn: classes) {
+    main = 'jidefx.examples.animation.AnimationDemo'
+    classpath = sourceSets.main.runtimeClasspath
+    args ''
+}
+
+task runIntelliHints (type: JavaExec, dependsOn: classes) {
+    main = 'jidefx.examples.intellihints.IntelliHintsDemo'
+    classpath = sourceSets.main.runtimeClasspath
+    args ''
+}
+
+task runBalloon (type: JavaExec, dependsOn: classes) {
+    main = 'jidefx.examples.popup.BalloonDemo'
+    classpath = sourceSets.main.runtimeClasspath
+    args ''
+}

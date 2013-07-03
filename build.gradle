@@ -1,0 +1,164 @@
+defaultTasks = ['build']
+
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'signing'
+
+    group = 'com.jidefx'
+    version = "${VERSION}"
+
+    configurations {
+        jdk
+    }
+
+    tasks.withType(Compile) {
+        options.compilerArgs = ["-g:${DEBUG_LEVELS}"]
+    }
+
+		repositories {
+		    mavenCentral()
+		}
+}
+
+configure(subprojects) {
+    apply from: '../common.gradle'
+}
+
+project(':module-decoration') {
+    dependencies {
+        compile project(':module-common')
+    }
+}
+
+project(':module-validation') {
+    dependencies {
+        compile project(':module-decoration')
+    }
+}
+
+project(':module-fields') {
+    dependencies {
+        compile project(':module-converters')
+        compile project(':module-decoration')
+        compile 'com.miglayout:miglayout-core:4.2'
+        compile 'com.miglayout:miglayout-javafx:4.2'
+    }
+}
+
+def allModules = [
+        "module-common",
+        "module-comparators",
+        "module-converters",
+        "module-decoration",
+        "module-fields",
+        "module-validation"
+]
+
+def RELEASE_BASE = "build/release-${VERSION}"
+
+task initExamples (type: Copy) {
+    from(['module-examples/src/main/java']) {
+        include '**/*'
+    }
+    from(['module-examples/src/main/resources']) {
+        include '**/*'
+    }
+    into RELEASE_BASE + "/examples/src"
+}
+
+task initProjectFiles (type: Copy) {
+    from(['module-examples/project files/gradle']) {
+        include 'build.gradle'
+        filter { line -> line.replaceAll('@@VERSION@@', "${VERSION}") }
+    }
+    from(['module-examples/project files/idea']) {
+        include '**.*', ".idea/**", "lib/**"
+    }
+    into RELEASE_BASE
+}
+
+task build (overwrite: true, type: Copy, dependsOn: [subprojects.assemble, initProjectFiles, initExamples]) {
+    from('doc') {
+        include '*.pdf'
+        into "doc"
+    }
+    from(allModules) {
+        include 'doc/*.pdf'
+        into "doc"
+        eachFile { f ->
+            f.path = f.path.replaceAll(/(.*\/)doc\/(.*)/, '$1$2')
+        }
+    }
+    from(allModules) {
+        include "dist/*-${VERSION}-javadoc.jar"
+        into "javadoc"
+        eachFile { f ->
+            f.path = f.path.replaceAll(/(.*\/)dist\/(.*)/, '$1$2')
+        }
+    }
+    from(allModules) {
+        include "dist/*-${VERSION}.jar"
+        exclude "dist/*javadoc.jar", "dist/*source.jar"
+        into "lib"
+        eachFile { f ->
+            f.path = f.path.replaceAll(/(.*\/)dist\/(.*)/, '$1$2')
+        }
+    }
+    from(allModules) {
+        include "dist/*-${VERSION}-source.jar"
+        into "src"
+        eachFile { f ->
+            f.path = f.path.replaceAll(/(.*\/)dist\/(.*)/, '$1$2')
+        }
+    }
+    into RELEASE_BASE
+    includeEmptyDirs = false
+}
+
+def PATH_RELEASE = 'dist'
+
+task updateVersion << {
+    def updateFiles = [
+            'module-common': 'build.gradle',
+            'module-common/src/main/java/jidefx/utils': 'Version.java',
+            'module-comparators': 'build.gradle',
+            'module-converters': 'build.gradle',
+            'module-decoration': 'build.gradle',
+            'module-fields': 'build.gradle',
+            'module-validation': 'build.gradle',
+            'module-examples/project files/idea/.idea': 'workspace.xml',
+            'module-examples/project files/idea/.idea/libraries': 'apache_commons.xml',
+            'module-examples/project files/idea/.idea/libraries': 'jidefx.xml',
+            'module-examples/project files/idea/.idea/libraries': 'miglayout.xml',
+            'module-examples/project files/idea': 'jidefx-demo.iml',
+            'module-examples/project files/gradle': 'build.gradle',
+            'module-examples/project files/netbeans/nbproject': 'project.properties'
+    ]
+
+    def tmp = 'build/tmp/version'
+
+    updateFiles.each{ key, value ->
+        copy {
+            from key
+            include value
+            into tmp
+            filter { line -> line.replaceAll("${OLD_VERSION}", "${VERSION}") }
+        }
+        copy {
+            from tmp
+            include value
+            into file(key)
+        }
+    }
+}
+
+task cleanBuild << {
+    allModules.each {
+        delete it + "/dist"
+    }
+    delete file(RELEASE_BASE)
+}
+
+task clean(overwrite: true, dependsOn: cleanBuild) {
+}

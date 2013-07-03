@@ -1,0 +1,6 @@
+include "module-common",
+        "module-comparators",
+        "module-converters",
+        "module-decoration",
+        "module-validation",
+        "module-fields"

@@ -1,0 +1,17 @@
+.shaped-popup {
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 8, 0.0 , 0 , 0 );
+}
+
+.shaped-popup-outline {
+    -fx-fill: #063c85, #719edb;
+    -fx-background-insets: 0,1;
+    -fx-stroke: #c8c8c8;
+}
+
+.shaped-popup-content {
+    -fx-font-size: 24px;
+}
+
+.shaped-popup-content > .label {
+    -fx-text-fill: #bbbbbb;
+}

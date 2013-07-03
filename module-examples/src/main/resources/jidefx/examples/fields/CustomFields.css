@@ -1,0 +1,44 @@
+#customField > #increase-button {
+    -fx-background-color: -fx-mark-highlight-color, derive(red, 30%);
+    -fx-background-insets: 1 0 -1 0, 0;
+    -fx-graphic: null;
+    -fx-padding: 0.166667em 0.333333em 0.166667em 0.333333em; /* 2 3.5 2 3.5 */
+    -fx-shape: "M 1 4 h 3 v -3 h 1 v 3 h 3 v 1 h -3 v 3 h -1 v -3 h -3 v -1 M 0 0 h 0.01 M 9 9 h -0.01";
+}
+#customField > #increase-button:hover {
+    -fx-background-color: -fx-mark-highlight-color, derive(red, 10%);
+}
+#customField > #increase-button:pressed {
+    -fx-background-color: -fx-mark-highlight-color, derive(red, -20%);
+}
+#customField > #increase-button:disabled {
+    -fx-opacity: 0.4;
+}
+
+#customField > #decrease-button {
+    -fx-background-color: -fx-mark-highlight-color, derive(green, 30%);
+    -fx-background-insets: 1 0 -1 0, 0;
+    -fx-padding: 0.166667em 0.333333em 0.166667em 0.333333em; /* 2 3.5 2 3.5 */
+    -fx-graphic: null;
+    -fx-shape: "M 1 4 h 7 v 1 h -7 v -1 M 0 0 h 0.01 M 9 9 h -0.01";
+}
+#customField > #decrease-button:hover {
+    -fx-background-color: -fx-mark-highlight-color, derive(green, 10%);
+}
+#customField > #decrease-button:pressed {
+    -fx-background-color: -fx-mark-highlight-color, derive(green, -20%);
+}
+#customField > #decrease-button:disabled {
+    -fx-opacity: 0.4;
+}
+
+.formatted-text-field:readonly {
+    -fx-background-color: transparent;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.formatted-text-field:disabled {
+    -fx-background-color: transparent;
+    -fx-opacity: 0.4;
+    -fx-alignment: CENTER_LEFT;
+}

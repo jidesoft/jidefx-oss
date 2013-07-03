@@ -1,0 +1,128 @@
+.decoration-support > .increase-button {
+    -fx-border-color: transparent;
+    -fx-background-color: -fx-mark-highlight-color, derive(-fx-mark-color, 30%);
+    -fx-background-insets: 1 0 -1 0, 0;
+    /* padding determines the size of the arrow;
+       this should match the design size in the SVG */
+    -fx-padding: 0.166667em 0.333333em 0.166667em 0.333333em; /* 2 3.5 2 3.5 */
+    -fx-shape: "M 0 0 h 7 l -3.5 -4 z";
+}
+.decoration-support > .increase-button:hover {
+    -fx-background-color: -fx-mark-highlight-color, derive(-fx-mark-color, 10%);
+}
+.decoration-support > .increase-button:pressed {
+    -fx-background-color: -fx-mark-highlight-color, derive(-fx-mark-color, -20%);
+}
+
+.decoration-support > .increase-button:disabled {
+    -fx-opacity: 0.4;
+}
+
+.decoration-support > .decrease-button {
+    -fx-border-color: transparent;
+    -fx-background-color: -fx-mark-highlight-color, derive(-fx-mark-color, 30%);
+    -fx-background-insets: 1 0 -1 0, 0;
+    /* padding determines the size of the arrow;
+       this should match the design size in the SVG */
+    -fx-padding: 0.166667em 0.333333em 0.166667em 0.333333em; /* 2 3.5 2 3.5 */
+    -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+}
+
+.decoration-support > .decrease-button:hover {
+    -fx-background-color: -fx-mark-highlight-color, derive(-fx-mark-color, 10%);
+}
+.decoration-support > .decrease-button:pressed {
+    -fx-background-color: -fx-mark-highlight-color, derive(-fx-mark-color, -20%);
+}
+
+.decoration-support > .decrease-button:disabled {
+    -fx-opacity: 0.4;
+ }
+
+.decoration-support > .popup-button {
+    -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
+    -fx-background-insets: 1 0 -1 0, 0;
+    /* padding determines the size of the arrow;
+       this should match the design size in the SVG */
+    -fx-padding: 0.166667em 0.333333em 0.166667em 0.333333em; /* 2 3.5 2 3.5 */
+    -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+}
+
+.decoration-support > .popup-button:hover {
+    -fx-background-color: -fx-mark-highlight-color, derive(-fx-mark-color, 10%);
+}
+
+.decoration-support > .popup-button:pressed {
+    -fx-background-color: -fx-mark-highlight-color, derive(-fx-mark-color, -20%);
+}
+
+.decoration-support > .popup-button:disabled {
+    -fx-opacity: 0.4;
+}
+
+.decoration-support > .no-background-button {
+    -fx-border-color: transparent;
+    -fx-background-color: #ffffff00;
+}
+
+.decoration-support > * > .predefined-shape,
+.decoration-support > .predefined-shape {
+    -fx-opacity: 0.8;
+}
+.decoration-support > * > .predefined-shape:hover,
+.decoration-support > .predefined-shape:hover {
+    -fx-opacity: 0.7;
+}
+.decoration-support > * >.predefined-shape:pressed,
+.decoration-support > .predefined-shape:pressed {
+    -fx-opacity: 1.0;
+}
+.decoration-support > * > .predefined-shape:disabled,
+.decoration-support > .predefined-shape:disabled {
+    -fx-opacity: 0.4;
+}
+
+.formatted-text-field:readonly {
+    -fx-background-color: transparent;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* copy from modena only */
+.combo-box-field,
+.combo-box-field:editable > .arrow-button {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius: 3px, 3px, 2px, 1px;
+    -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em; /* 4 8 4 8 */
+    -fx-text-fill: -fx-text-base-color;
+    -fx-alignment: CENTER_LEFT;
+    -fx-content-display: LEFT;
+}
+.combo-box-field:hover,
+.combo-box-field:editable > .arrow-button:hover {
+    -fx-color: -fx-hover-base;
+}
+.combo-box-field:showing,
+.combo-box-field:editable:showing > .arrow-button {
+    -fx-color: -fx-pressed-base;
+}
+.combo-box-field:focused {
+    -fx-background-color: -fx-focus-color, -fx-inner-border, -fx-body-color, -fx-faint-focus-color, -fx-body-color;
+    -fx-background-insets: -0.2, 1, 2, -1.4, 2.6;
+    -fx-background-radius: 3, 2, 1, 4, 1;
+}
+.combo-box-field:editable > .arrow-button  {
+    -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets: 1 1 1 0, 1, 2;
+    -fx-background-radius: 0 3 3 0, 0 2 2 0, 0 1 1 0;
+}
+.combo-box-field:editable:contains-focus {
+    -fx-background-color: -fx-focus-color;
+    -fx-background-insets: -0.2;
+    -fx-background-radius: 3;
+}
+.combo-box-field:editable:contains-focus > .arrow-button {
+    -fx-background-color: -fx-inner-border, -fx-body-color, -fx-faint-focus-color, -fx-body-color;
+    -fx-background-insets: 1, 2, 1, 2.6;
+    -fx-background-radius: 0 2 2 0, 0 1 1 0, 0 1 1 0, 0 1 1 0;
+}

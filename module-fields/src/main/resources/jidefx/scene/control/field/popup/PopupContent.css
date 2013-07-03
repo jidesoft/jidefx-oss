@@ -1,0 +1,32 @@
+.combo-box-popup > .popup-content {
+     -fx-background-color:
+        derive(-fx-color,-40%),
+        derive(-fx-color,100%),
+        linear-gradient(to bottom,
+        derive(-fx-color,100%) 0%,
+        derive(-fx-color,50%) 12%,
+        derive(-fx-color,65%) 88%,
+        derive(-fx-color,23%) 100%);
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 6 6 6 6, 5 5 5 5, 4 4 4 4;
+    -fx-padding: 6;
+    -fx-alignment: CENTER; /* VBox */
+    -fx-spacing: 4; /* VBox */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 8, 0.0, 0, 0);
+}
+
+.date-picker-popup {
+     -fx-background-color:
+        derive(-fx-color,-40%),
+        derive(-fx-color,100%),
+        linear-gradient(to bottom,
+        derive(-fx-color,100%) 0%,
+        derive(-fx-color,50%) 12%,
+        derive(-fx-color,65%) 88%,
+        derive(-fx-color,23%) 100%);
+    -fx-background-insets: 0, 0, 0;
+    -fx-background-radius: 0 0 6 6, 0 0 5 5, 0 0 4 4;
+    -fx-padding: 0;
+    -fx-alignment: CENTER; /* VBox */
+    -fx-spacing: 4; /* VBox */
+}

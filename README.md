@@ -16,6 +16,7 @@ In addition, there is a build folder that contains all the jars as well as the e
 *********************************
    Example Directory Structure
 *********************************
+<pre>
 build
   ©¸©¤©¤release-x.x.x
        ©À©¤©¤ .idea                 ; IntelliJ IDEA project folder
@@ -26,5 +27,5 @@ build
        ©À©¤©¤ src	                 ; source code jars
        ©À©¤©¤ build.gradle          ; gradle build script for examples, TextFieldsDemo will be executed by default
        ©¸©¤©¤ jidefx-demo.iml       ; IntelliJ IDEA module file
-   
+</pre>   
 Since JavaFX is still a work in progress, we built our products on top of JDK 8 and JavaFX 8 early access releases so that we can leverage the latest features from this new technology. So, in order to try out these products, you will have to download the latest EA release from https://jdk8.java.net/download.html. We will keep JideFX in sync with the latest JDK 8 EA so that the latest version will always work with the latest JDK 8 EA. The JDK 8 will be formally released in a couple of months which will give us enough time to complete our beta phase.

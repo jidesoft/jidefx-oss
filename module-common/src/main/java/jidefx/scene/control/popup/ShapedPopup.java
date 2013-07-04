@@ -230,7 +230,6 @@ public class ShapedPopup extends PopupControl {
         PopupOutline path = getPopupOutline();
         Point2D anchorPoint = path.getOriginPoint();
         setX(x - anchorPoint.getX());
-        System.out.println("set x " + (x - anchorPoint.getX()));
         setY(y - anchorPoint.getY());
     }
 

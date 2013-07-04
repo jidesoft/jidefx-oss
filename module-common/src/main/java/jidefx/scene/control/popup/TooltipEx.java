@@ -62,7 +62,7 @@ import java.util.List;
 
 
 /**
- * Copied from {@code Tooltip} to support tooltip position. The code changes are tagged by // Added in JideFX. This
+ * Copied from {@code Tooltip} (jdk8 ea build 96) to support tooltip position. The code changes are tagged by // Added in JideFX. This
  * class is not intended to be a public API. We might remove this class in the future if JavaFX tooltip supports the
  * tooltip position or we find a better solution.
  */
@@ -490,6 +490,10 @@ public class TooltipEx extends PopupControl {
         return getClassCssMetaData();
     }
 
+    @Override public Styleable getStyleableParent() {
+        return BEHAVIOR.hoveredNode;
+    }
+
     final class CSSBridge extends PopupControl.CSSBridge {
 
         @Override
@@ -903,7 +907,6 @@ public class TooltipEx extends PopupControl {
                             double x = event.getScreenX();
                             double y = event.getScreenY();
                             Point2D p = adjustTooltipLocation(hoveredNode, t);
-                            hoveredNode = null;
                             if (p != null) {
                                 t.show(owner, p.getX(), p.getY());
                             }

@@ -26,6 +26,8 @@
 package jidefx.scene.control.field.popup;
 
 import com.sun.javafx.scene.control.skin.resources.ControlResources;
+import com.sun.javafx.scene.traversal.Direction;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -34,9 +36,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -48,6 +50,7 @@ import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Chronology;
 import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.ValueRange;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -60,7 +63,7 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.WEEKS;
 
 /**
- * The full content for a date picker or a date combobox. It was copied from DatePickerContent and modified to allow the
+ * The full content for a date picker or a date combobox. It was copied from DatePickerContent.java (jdk8 ea build 96) and modified to allow the
  * data type to be LocalDate, Date or Calendar as long as it can represent a date. Internally it uses the LocalDate to
  * draw the day grids. Two methods - {@link #toLocalDate(Object)} and {@link #fromLocalDate(LocalDate)} can be
  * implemented to provide conversions between the LocalDate and the actual data type.
@@ -78,6 +81,7 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
     private List<DateCell> weekNumberCells = new ArrayList<>();
     protected List<DateCell> dayCells = new ArrayList<>();
     private LocalDate[] dayCellDates;
+    private DateCell lastFocusedDayCell = null;
 
     final DateTimeFormatter monthFormatter =
             DateTimeFormatter.ofPattern("MMMM"); //NON-NLS
@@ -153,9 +157,27 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
         getChildren().add(createMonthYearPane());
 
         gridPane = new GridPane();
+        gridPane.setFocusTraversable(true);
         gridPane.getStyleClass().add("calendar-grid"); //NON-NLS
         gridPane.setVgap(-1);
         gridPane.setHgap(-1);
+
+        gridPane.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean hasFocus) {
+                if (hasFocus) {
+                    if (lastFocusedDayCell != null) {
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                lastFocusedDayCell.requestFocus();
+                            }
+                        });
+                    } else {
+                        clearFocus();
+                    }
+                }
+            }
+        });
 
         // get the weekday labels starting with the weekday that is the
         // first-day-of-the-week according to the locale in the
@@ -178,6 +200,77 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
         getChildren().add(gridPane);
 
         refresh();
+
+
+        // RT-30511: This enables traversal (not sure why Scene doesn't handle this),
+        // plus it prevents key events from reaching the popup's owner.
+        addEventHandler(KeyEvent.ANY, new EventHandler<KeyEvent>() {
+            @Override public void handle(KeyEvent e) {
+                Node node = getScene().getFocusOwner();
+                if (e.getEventType() == KeyEvent.KEY_PRESSED) {
+                    switch (e.getCode()) {
+                      case TAB:
+                          node.impl_traverse(e.isShiftDown() ? Direction.PREVIOUS : Direction.NEXT);
+                          e.consume();
+                          break;
+
+                      case UP:
+                          if (!e.isAltDown()) {
+                              node.impl_traverse(Direction.UP);
+                              e.consume();
+                          }
+                          break;
+
+                      case DOWN:
+                          if (!e.isAltDown()) {
+                              node.impl_traverse(Direction.DOWN);
+                              e.consume();
+                          }
+                          break;
+
+                      case LEFT:
+                          node.impl_traverse(Direction.LEFT);
+                          e.consume();
+                          break;
+
+                      case RIGHT:
+                          node.impl_traverse(Direction.RIGHT);
+                          e.consume();
+                          break;
+                    }
+                    if (e.isConsumed() && node instanceof DateCell) {
+                        lastFocusedDayCell = (DateCell)node;
+                    }
+                }
+
+                // our little secret... borrowed from Scene.java
+                if (!e.isConsumed() && e.getCode() == KeyCode.DIGIT8 &&
+                     e.getEventType() == KeyEvent.KEY_PRESSED && e.isControlDown() && e.isShiftDown()) {
+                    try {
+                        Class scenicview = Class.forName("com.javafx.experiments.scenicview.ScenicView");
+                        Class params[] = new Class[] { getScene().getClass() };
+                        java.lang.reflect.Method method = scenicview.getDeclaredMethod("show", params);
+                        method.invoke(null, getScene());
+                    } catch (Exception ex) {
+                        //System.out.println("exception instantiating ScenicView:"+ex);
+                    }
+                }
+
+                // Consume all key events except those that control
+                // showing the popup.
+                switch (e.getCode()) {
+                  case ESCAPE:
+                  case F4:
+                  case F10:
+                  case UP:
+                  case DOWN:
+                      break;
+
+                  default:
+                    e.consume();
+                }
+            }
+        });
     }
 
     private ObjectProperty<YearMonth> displayedYearMonth =
@@ -534,6 +627,22 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
         return dayCellDates[dayCells.indexOf(dateCell)];
     }
 
+    // public for behavior class
+    public void goToDayCell(DateCell dateCell, int offset, ChronoUnit unit) {
+        goToDate(dayCellDate(dateCell).plus(offset, unit));
+    }
+
+    // public for behavior class
+    public void goToDate(LocalDate date) {
+        displayedYearMonth.set(YearMonth.from(date));
+        findDayCellForDate(date).requestFocus();
+    }
+
+    // public for behavior class
+    public void selectDayCell(DateCell dateCell) {
+        setValue(fromLocalDate(dayCellDate(dateCell)));
+    }
+
     private DateCell findDayCellForDate(LocalDate date) {
         for (int i = 0; i < dayCellDates.length; i++) {
             if (date.equals(dayCellDates[i])) {
@@ -550,7 +659,7 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
         }
         if (YearMonth.from(focusDate).equals(displayedYearMonth.get())) {
             // focus date
-            findDayCellForDate(focusDate).requestFocus();
+            goToDate(focusDate);
         }
         else {
             // focus month spinner (should not happen)
@@ -562,17 +671,19 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
         EventHandler<MouseEvent> dayCellActionHandler = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent ev) {
+                if (ev.getButton() != MouseButton.PRIMARY) {
+                    return;
+                }
+
                 DateCell dayCell = (DateCell) ev.getSource();
                 LocalDate date = dayCellDate(dayCell);
                 YearMonth yearMonth = YearMonth.from(date);
 
                 if (yearMonth.equals(displayedYearMonth.get())) {
-                    setValue(fromLocalDate(date));
-                }
-                else {
+                    selectDayCell(dayCell);
+                } else {
                     // previous or next month
-                    displayedYearMonth.set(yearMonth);
-                    findDayCellForDate(date).requestFocus();
+                    goToDate(date);
                 }
             }
         };

@@ -32,7 +32,7 @@ import jidefx.scene.control.popup.TooltipEx;
 
 
 /**
- * Copied from {@code TooltipSkin} to support tooltip position. Nothing is changed except it takes a ToolTipEx
+ * Copied from {@code TooltipSkin} (jdk8 ea build 96) to support tooltip position. Nothing is changed except it takes a ToolTipEx
  * instance.
  */
 public class TooltipExSkin implements Skin<TooltipEx> {

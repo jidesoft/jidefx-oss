@@ -1267,7 +1267,7 @@ public abstract class Searchable<T> {
                     newText = text.substring(1);
                 }
                 else if (e.getCode() == KeyCode.BACK_SPACE) {
-                    newText = text.substring(0, text.length() - 1);
+                    newText = text.substring(0, Math.max(0,text.length() - 1));
                 }
                 else if (!e.isAltDown() && !e.isControlDown() && !e.isMetaDown()) {
                     newText = text.concat(e.getText());

@@ -13,6 +13,7 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Locale;
 
 public class LocalDateConverterTest {
 
@@ -21,7 +22,7 @@ public class LocalDateConverterTest {
     @Before
     public void setUp() throws Exception {
         _converter = new LocalDateConverter();
-
+        Locale.setDefault(Locale.US);
     }
 
     @Test

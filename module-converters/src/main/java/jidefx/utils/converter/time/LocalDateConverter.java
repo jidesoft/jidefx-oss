@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.temporal.TemporalAccessor;
+import java.util.Locale;
 
 /**
  * {@link jidefx.utils.converter.ObjectConverter} for {@link LocalDate}.
@@ -31,6 +32,9 @@ public class LocalDateConverter extends TemporalAccessConverter<LocalDate> {
         setDefaultDateTimeFormatter(_defaultFormatter);
     }
 
+    synchronized public LocalDate fromString(String string, String pattern) {
+        return LocalDate.from(DateTimeFormatter.ofPattern(pattern).parse(string));
+    }
     /**
      * Converts from a String to a LocalDate. It will try all the SHORT, MEDIUM, LONG, FULL format as defined in
      * FormatStyle for the date. If failed, it will further try the following format in order until it found a match:
@@ -54,7 +58,7 @@ public class LocalDateConverter extends TemporalAccessConverter<LocalDate> {
             for (String formatString : formatStrings) {
                 try {
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern(formatString);
-                    return LocalDate.from(dtf.parse(string));
+                    return LocalDate.from(dtf.withLocale(Locale.getDefault()).parse(string));
                 }
                 catch (Exception ignored) {
                 }

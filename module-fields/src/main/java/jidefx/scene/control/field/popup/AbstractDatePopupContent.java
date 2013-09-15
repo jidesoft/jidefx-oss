@@ -25,101 +25,117 @@
 
 package jidefx.scene.control.field.popup;
 
+import com.sun.javafx.css.converters.BooleanConverter;
 import com.sun.javafx.scene.control.skin.resources.ControlResources;
 import com.sun.javafx.scene.traversal.Direction;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.css.CssMetaData;
+import javafx.css.Styleable;
+import javafx.css.StyleableBooleanProperty;
+import javafx.css.StyleableProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.input.*;
+import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.Chronology;
 import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DecimalStyle;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.ValueRange;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static com.sun.javafx.PlatformUtil.isMac;
 import static java.time.temporal.ChronoField.DAY_OF_WEEK;
 import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
-import static java.time.temporal.ChronoUnit.DAYS;
-import static java.time.temporal.ChronoUnit.WEEKS;
+import static java.time.temporal.ChronoUnit.*;
 
 /**
- * The full content for a date picker or a date combobox. It was copied from DatePickerContent.java (jdk8 ea build 96) and modified to allow the
- * data type to be LocalDate, Date or Calendar as long as it can represent a date. Internally it uses the LocalDate to
- * draw the day grids. Two methods - {@link #toLocalDate(Object)} and {@link #fromLocalDate(LocalDate)} can be
- * implemented to provide conversions between the LocalDate and the actual data type.
+ * The full content for a date picker or a date combobox. It was copied from AbstractDatePopupContent.java (jdk8 ea build 96)
+ * and modified to allow the data type to be LocalDate, Date or Calendar as long as it can represent a date. Internally
+ * it uses the LocalDate to draw the day grids. Two methods - {@link #toLocalDate(Object)} and {@link
+ * #fromLocalDate(java.time.LocalDate)} can be implemented to provide conversions between the LocalDate and the actual data type.
  */
-public abstract class AbstractDatePopupContent<T> extends VBox implements PopupContent<T> {
-    private static final String STYLE_CLASS_DEFAULT = "popup-content"; //NON-NLS
 
+/**
+ * The full content for the DatePicker popup. This class could probably be used more or less as-is with an embeddable
+ * type of date picker that doesn't use a popup.
+ */
+abstract public class AbstractDatePopupContent<T> extends VBox implements PopupContent<T> {
+    protected AbstractDatePopupContent<T> datePicker;
     private Button backMonthButton;
+    private Button forwardMonthButton;
+    private Button backYearButton;
+    private Button forwardYearButton;
     private Label monthLabel;
     private Label yearLabel;
     protected GridPane gridPane;
 
     private int daysPerWeek;
-    private List<DateCell> dayNameCells = new ArrayList<>();
-    private List<DateCell> weekNumberCells = new ArrayList<>();
-    protected List<DateCell> dayCells = new ArrayList<>();
+    private List<DateCell> dayNameCells = new ArrayList<DateCell>();
+    private List<DateCell> weekNumberCells = new ArrayList<DateCell>();
+    protected List<DateCell> dayCells = new ArrayList<DateCell>();
     private LocalDate[] dayCellDates;
     private DateCell lastFocusedDayCell = null;
 
     final DateTimeFormatter monthFormatter =
-            DateTimeFormatter.ofPattern("MMMM"); //NON-NLS
+            DateTimeFormatter.ofPattern("MMMM");
 
     final DateTimeFormatter monthFormatterSO =
-            DateTimeFormatter.ofPattern("LLLL"); // Standalone month name NON-NLS
+            DateTimeFormatter.ofPattern("LLLL"); // Standalone month name
 
     final DateTimeFormatter yearFormatter =
             DateTimeFormatter.ofPattern("y");
 
     final DateTimeFormatter yearWithEraFormatter =
-            DateTimeFormatter.ofPattern("GGGGy"); // For Japanese. What to use for others?? NON-NLS
+            DateTimeFormatter.ofPattern("GGGGy"); // For Japanese. What to use for others??
 
     final DateTimeFormatter weekNumberFormatter =
-            DateTimeFormatter.ofPattern("w"); //NON-NLS
+            DateTimeFormatter.ofPattern("w");
 
     final DateTimeFormatter weekDayNameFormatter =
-            DateTimeFormatter.ofPattern("ccc"); // Standalone day name NON-NLS
+            DateTimeFormatter.ofPattern("ccc"); // Standalone day name
 
     final DateTimeFormatter dayCellFormatter =
-            DateTimeFormatter.ofPattern("d"); //NON-NLS
+            DateTimeFormatter.ofPattern("d");
 
     final ContextMenu contextMenu = new ContextMenu();
 
     static String getString(String key) {
-        return ControlResources.getString("DatePicker." + key); //NON-NLS
+        return ControlResources.getString("DatePicker." + key);
     }
 
     public AbstractDatePopupContent() {
-        getStylesheets().add(PopupContent.class.getResource("PopupContent.css").toExternalForm()); //NON-NLS
-        getStyleClass().add(STYLE_CLASS_DEFAULT);
-        getStyleClass().add("date-picker-popup"); //NON-NLS
-        setEffect(null);
+        this.datePicker = this;
+
+        getStyleClass().add("date-picker-popup");
 
         daysPerWeek = getDaysPerWeek();
 
         contextMenu.getItems().addAll(
-                new MenuItem(getString("contextMenu.showToday")) {{ //NON-NLS
+                new MenuItem(getString("contextMenu.showToday")) {{
                     setOnAction(new EventHandler<ActionEvent>() {
                         @Override
                         public void handle(ActionEvent t) {
@@ -128,8 +144,8 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
                     });
                 }},
                 new SeparatorMenuItem(),
-                new CheckMenuItem(getString("contextMenu.showWeekNumbers")) {{ //NON-NLS
-                    selectedProperty().bindBidirectional(showWeekNumbersProperty());
+                new CheckMenuItem(getString("contextMenu.showWeekNumbers")) {{
+                    selectedProperty().bindBidirectional(datePicker.showWeekNumbersProperty());
                 }}
         );
 
@@ -142,7 +158,8 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
         });
 
         {
-            updateDisplayedYearMonth();
+            T date = datePicker.getValue();
+            displayedYearMonth.set((date != null) ? YearMonth.from(toLocalDate(date)) : YearMonth.now());
         }
 
         displayedYearMonth.addListener(new ChangeListener<YearMonth>() {
@@ -156,14 +173,31 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
 
         getChildren().add(createMonthYearPane());
 
-        gridPane = new GridPane();
+        gridPane = new GridPane() {
+            @Override
+            protected double computePrefWidth(double height) {
+                final double width = super.computePrefWidth(height);
+
+                // RT-30903: Make sure width snaps to pixel when divided by
+                // number of columns. GridPane doesn't do this with percentage
+                // width constraints. See GridPane.adjustColumnWidths().
+                final int nCols = daysPerWeek + (datePicker.isShowWeekNumbers() ? 1 : 0);
+                final double snaphgap = snapSpace(getHgap());
+                final double left = snapSpace(getInsets().getLeft());
+                final double right = snapSpace(getInsets().getRight());
+                final double hgaps = snaphgap * (nCols - 1);
+                final double contentWidth = width - left - right - hgaps;
+                return ((snapSize(contentWidth / nCols)) * nCols) + left + right + hgaps;
+            }
+        };
         gridPane.setFocusTraversable(true);
-        gridPane.getStyleClass().add("calendar-grid"); //NON-NLS
+        gridPane.getStyleClass().add("calendar-grid");
         gridPane.setVgap(-1);
         gridPane.setHgap(-1);
 
         gridPane.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean hasFocus) {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean hasFocus) {
                 if (hasFocus) {
                     if (lastFocusedDayCell != null) {
                         Platform.runLater(new Runnable() {
@@ -172,7 +206,8 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
                                 lastFocusedDayCell.requestFocus();
                             }
                         });
-                    } else {
+                    }
+                    else {
                         clearFocus();
                     }
                 }
@@ -184,14 +219,14 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
         // displayed LocalDate
         for (int i = 0; i < daysPerWeek; i++) {
             DateCell cell = new DateCell();
-            cell.getStyleClass().add("day-name-cell"); //NON-NLS
+            cell.getStyleClass().add("day-name-cell");
             dayNameCells.add(cell);
         }
 
         // Week number column
         for (int i = 0; i < 6; i++) {
             DateCell cell = new DateCell();
-            cell.getStyleClass().add("week-number-cell"); //NON-NLS
+            cell.getStyleClass().add("week-number-cell");
             weekNumberCells.add(cell);
         }
 
@@ -201,80 +236,101 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
 
         refresh();
 
-
         // RT-30511: This enables traversal (not sure why Scene doesn't handle this),
         // plus it prevents key events from reaching the popup's owner.
         addEventHandler(KeyEvent.ANY, new EventHandler<KeyEvent>() {
-            @Override public void handle(KeyEvent e) {
+            @Override
+            public void handle(KeyEvent e) {
                 Node node = getScene().getFocusOwner();
-                if (e.getEventType() == KeyEvent.KEY_PRESSED) {
-                    switch (e.getCode()) {
-                      case TAB:
-                          node.impl_traverse(e.isShiftDown() ? Direction.PREVIOUS : Direction.NEXT);
-                          e.consume();
-                          break;
-
-                      case UP:
-                          if (!e.isAltDown()) {
-                              node.impl_traverse(Direction.UP);
-                              e.consume();
-                          }
-                          break;
-
-                      case DOWN:
-                          if (!e.isAltDown()) {
-                              node.impl_traverse(Direction.DOWN);
-                              e.consume();
-                          }
-                          break;
-
-                      case LEFT:
-                          node.impl_traverse(Direction.LEFT);
-                          e.consume();
-                          break;
-
-                      case RIGHT:
-                          node.impl_traverse(Direction.RIGHT);
-                          e.consume();
-                          break;
-                    }
-                    if (e.isConsumed() && node instanceof DateCell) {
-                        lastFocusedDayCell = (DateCell)node;
-                    }
+                if (node instanceof DateCell) {
+                    lastFocusedDayCell = (DateCell) node;
                 }
 
-                // our little secret... borrowed from Scene.java
-                if (!e.isConsumed() && e.getCode() == KeyCode.DIGIT8 &&
-                     e.getEventType() == KeyEvent.KEY_PRESSED && e.isControlDown() && e.isShiftDown()) {
-                    try {
-                        Class scenicview = Class.forName("com.javafx.experiments.scenicview.ScenicView");
-                        Class params[] = new Class[] { getScene().getClass() };
-                        java.lang.reflect.Method method = scenicview.getDeclaredMethod("show", params);
-                        method.invoke(null, getScene());
-                    } catch (Exception ex) {
-                        //System.out.println("exception instantiating ScenicView:"+ex);
+                if (e.getEventType() == KeyEvent.KEY_PRESSED) {
+                    switch (e.getCode()) {
+                        case TAB:
+                            node.impl_traverse(e.isShiftDown() ? Direction.PREVIOUS : Direction.NEXT);
+                            e.consume();
+                            break;
+
+                        case UP:
+                            if (!e.isAltDown()) {
+                                node.impl_traverse(Direction.UP);
+                                e.consume();
+                            }
+                            break;
+
+                        case DOWN:
+                            if (!e.isAltDown()) {
+                                node.impl_traverse(Direction.DOWN);
+                                e.consume();
+                            }
+                            break;
+
+                        case LEFT:
+                            node.impl_traverse(Direction.LEFT);
+                            e.consume();
+                            break;
+
+                        case RIGHT:
+                            node.impl_traverse(Direction.RIGHT);
+                            e.consume();
+                            break;
+
+                        case PAGE_UP:
+                            if ((isMac() && e.isMetaDown()) || (!isMac() && e.isControlDown())) {
+                                if (!backYearButton.isDisabled()) {
+                                    forward(-1, YEARS);
+                                }
+                            }
+                            else {
+                                if (!backMonthButton.isDisabled()) {
+                                    forward(-1, MONTHS);
+                                }
+                            }
+                            e.consume();
+                            break;
+
+                        case PAGE_DOWN:
+                            if ((isMac() && e.isMetaDown()) || (!isMac() && e.isControlDown())) {
+                                if (!forwardYearButton.isDisabled()) {
+                                    forward(1, YEARS);
+                                }
+                            }
+                            else {
+                                if (!forwardMonthButton.isDisabled()) {
+                                    forward(1, MONTHS);
+                                }
+                            }
+                            e.consume();
+                            break;
+                    }
+
+                    node = getScene().getFocusOwner();
+                    if (node instanceof DateCell) {
+                        lastFocusedDayCell = (DateCell) node;
                     }
                 }
 
                 // Consume all key events except those that control
                 // showing the popup.
                 switch (e.getCode()) {
-                  case ESCAPE:
-                  case F4:
-                  case F10:
-                  case UP:
-                  case DOWN:
-                      break;
+                    case ESCAPE:
+                    case F4:
+                    case F10:
+                    case UP:
+                    case DOWN:
+                        break;
 
-                  default:
-                    e.consume();
+                    default:
+                        e.consume();
                 }
             }
         });
     }
 
     private ObjectProperty<YearMonth> displayedYearMonth =
-            new SimpleObjectProperty<>(this, "displayedYearMonth"); //NON-NLS
+            new SimpleObjectProperty<YearMonth>(this, "displayedYearMonth");
 
     ObjectProperty<YearMonth> displayedYearMonthProperty() {
         return displayedYearMonth;
@@ -283,26 +339,26 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
 
     protected BorderPane createMonthYearPane() {
         BorderPane monthYearPane = new BorderPane();
-        monthYearPane.getStyleClass().add("month-year-pane"); //NON-NLS
+        monthYearPane.getStyleClass().add("month-year-pane");
 
         // Month spinner
 
         HBox monthSpinner = new HBox();
-        monthSpinner.getStyleClass().add("spinner"); //NON-NLS
+        monthSpinner.getStyleClass().add("spinner");
 
         backMonthButton = new Button();
-        backMonthButton.getStyleClass().add("left-button"); //NON-NLS
+        backMonthButton.getStyleClass().add("left-button");
 
-        Button forwardMonthButton = new Button();
-        forwardMonthButton.getStyleClass().add("right-button"); //NON-NLS
+        forwardMonthButton = new Button();
+        forwardMonthButton.getStyleClass().add("right-button");
 
         StackPane leftMonthArrow = new StackPane();
-        leftMonthArrow.getStyleClass().add("left-arrow"); //NON-NLS
+        leftMonthArrow.getStyleClass().add("left-arrow");
         leftMonthArrow.setMaxSize(USE_PREF_SIZE, USE_PREF_SIZE);
         backMonthButton.setGraphic(leftMonthArrow);
 
         StackPane rightMonthArrow = new StackPane();
-        rightMonthArrow.getStyleClass().add("right-arrow"); //NON-NLS
+        rightMonthArrow.getStyleClass().add("right-arrow");
         rightMonthArrow.setMaxSize(USE_PREF_SIZE, USE_PREF_SIZE);
         forwardMonthButton.setGraphic(rightMonthArrow);
 
@@ -310,17 +366,17 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
         backMonthButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                displayedYearMonth.set(displayedYearMonth.get().minusMonths(1));
+                forward(-1, MONTHS);
             }
         });
 
         monthLabel = new Label();
-        monthLabel.getStyleClass().add("spinner-label"); //NON-NLS
+        monthLabel.getStyleClass().add("spinner-label");
 
         forwardMonthButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                displayedYearMonth.set(displayedYearMonth.get().plusMonths(1));
+                forward(1, MONTHS);
             }
         });
 
@@ -330,21 +386,21 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
         // Year spinner
 
         HBox yearSpinner = new HBox();
-        yearSpinner.getStyleClass().add("spinner"); //NON-NLS
+        yearSpinner.getStyleClass().add("spinner");
 
-        Button backYearButton = new Button();
-        backYearButton.getStyleClass().add("left-button"); //NON-NLS
+        backYearButton = new Button();
+        backYearButton.getStyleClass().add("left-button");
 
-        Button forwardYearButton = new Button();
-        forwardYearButton.getStyleClass().add("right-button"); //NON-NLS
+        forwardYearButton = new Button();
+        forwardYearButton.getStyleClass().add("right-button");
 
         StackPane leftYearArrow = new StackPane();
-        leftYearArrow.getStyleClass().add("left-arrow"); //NON-NLS
+        leftYearArrow.getStyleClass().add("left-arrow");
         leftYearArrow.setMaxSize(USE_PREF_SIZE, USE_PREF_SIZE);
         backYearButton.setGraphic(leftYearArrow);
 
         StackPane rightYearArrow = new StackPane();
-        rightYearArrow.getStyleClass().add("right-arrow"); //NON-NLS
+        rightYearArrow.getStyleClass().add("right-arrow");
         rightYearArrow.setMaxSize(USE_PREF_SIZE, USE_PREF_SIZE);
         forwardYearButton.setGraphic(rightYearArrow);
 
@@ -352,17 +408,17 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
         backYearButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                displayedYearMonth.set(displayedYearMonth.get().minusYears(1));
+                forward(-1, YEARS);
             }
         });
 
         yearLabel = new Label();
-        yearLabel.getStyleClass().add("spinner-label"); //NON-NLS
+        yearLabel.getStyleClass().add("spinner-label");
 
         forwardYearButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
-                displayedYearMonth.set(displayedYearMonth.get().plusYears(1));
+                forward(1, YEARS);
             }
         });
 
@@ -392,7 +448,7 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
         gridPane.getColumnConstraints().clear();
         gridPane.getChildren().clear();
 
-        int nCols = daysPerWeek + (isShowWeekNumbers() ? 1 : 0);
+        int nCols = daysPerWeek + (datePicker.isShowWeekNumbers() ? 1 : 0);
 
         ColumnConstraints columnConstraints = new ColumnConstraints();
         columnConstraints.setPercentWidth(100); // Treated as weight
@@ -405,7 +461,7 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
         }
 
         // Week number column
-        if (isShowWeekNumbers()) {
+        if (datePicker.isShowWeekNumbers()) {
             for (int i = 0; i < 6; i++) {
                 gridPane.add(weekNumberCells.get(i), 0, i + 2);  // col, row
             }
@@ -432,9 +488,9 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
     }
 
     void updateWeeknumberDateCells() {
-        if (isShowWeekNumbers()) {
-            Locale locale = getLocale();
-            int maxWeeksPerMonth = 6; // TODO: Get this from chronology?
+        if (datePicker.isShowWeekNumbers()) {
+            final Locale locale = getLocale();
+            final int maxWeeksPerMonth = 6; // TODO: Get this from chronology?
 
             LocalDate firstOfMonth = displayedYearMonth.get().atDay(1);
             for (int i = 0; i < maxWeeksPerMonth; i++) {
@@ -443,21 +499,16 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
                 // such as when Thai numerals are required.
                 String cellText =
                         weekNumberFormatter.withLocale(locale)
-//                                        .withSymbols(DateTimeFormatSymbols.of(locale))
+                                .withDecimalStyle(DecimalStyle.of(locale))
                                 .format(date);
                 weekNumberCells.get(i).setText(cellText);
             }
         }
     }
 
-    private void updateDisplayedYearMonth() {
-        LocalDate date = toLocalDate(getValue());
-        displayedYearMonth.set((date != null) ? YearMonth.from(date) : YearMonth.now());
-    }
-
     void updateDayCells() {
         Locale locale = getLocale();
-        Chronology chrono = getChronology();
+        Chronology chrono = getPrimaryChronology();
         int firstOfMonthIdx = determineFirstOfMonthDayOfWeek();
         YearMonth curMonth = displayedYearMonth.get();
         YearMonth prevMonth = curMonth.minusMonths(1);
@@ -468,55 +519,65 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
 
         for (int i = 0; i < 6 * daysPerWeek; i++) {
             DateCell dayCell = dayCells.get(i);
-            dayCell.getStyleClass().setAll("cell", "day-cell"); //NON-NLS
+            dayCell.getStyleClass().setAll("cell", "day-cell");
             dayCell.setDisable(false);
             dayCell.setStyle(null);
             dayCell.setGraphic(null);
             dayCell.setTooltip(null);
 
-            YearMonth month = curMonth;
-            int day = i - firstOfMonthIdx + 1;
-            //int index = firstOfMonthIdx + i - 1;
-            if (i < firstOfMonthIdx) {
-                month = prevMonth;
-                day = i + daysInPrevMonth - firstOfMonthIdx + 1;
-                dayCell.getStyleClass().add("previous-month"); //NON-NLS
-            }
-            else if (i >= firstOfMonthIdx + daysInCurMonth) {
-                month = nextMonth;
-                day = i - daysInCurMonth - firstOfMonthIdx + 1;
-                dayCell.getStyleClass().add("next-month"); //NON-NLS
-            }
-            LocalDate date = month.atDay(day);
-            dayCellDates[i] = date;
-            ChronoLocalDate cDate = toChrono(date);
+            try {
+                YearMonth month = curMonth;
+                int day = i - firstOfMonthIdx + 1;
+                //int index = firstOfMonthIdx + i - 1;
+                if (i < firstOfMonthIdx) {
+                    month = prevMonth;
+                    day = i + daysInPrevMonth - firstOfMonthIdx + 1;
+                    dayCell.getStyleClass().add("previous-month");
+                }
+                else if (i >= firstOfMonthIdx + daysInCurMonth) {
+                    month = nextMonth;
+                    day = i - daysInCurMonth - firstOfMonthIdx + 1;
+                    dayCell.getStyleClass().add("next-month");
+                }
+                LocalDate date = month.atDay(day);
+                dayCellDates[i] = date;
+                ChronoLocalDate cDate = chrono.date(date);
 
-            if (isToday(date)) {
-                dayCell.getStyleClass().add("today"); //NON-NLS
+                dayCell.setDisable(false);
+
+                if (isToday(date)) {
+                    dayCell.getStyleClass().add("today");
+                }
+
+                if (date.equals(datePicker.getValue())) {
+                    dayCell.getStyleClass().add("selected");
+                }
+
+                String cellText =
+                        dayCellFormatter.withLocale(locale)
+                                .withChronology(chrono)
+                                .withDecimalStyle(DecimalStyle.of(locale))
+                                .format(cDate);
+                dayCell.setText(cellText);
+
+                dayCell.updateItem(date, false);
             }
-
-            if (date.equals(toLocalDate(getValue()))) {
-                dayCell.getStyleClass().add("selected"); //NON-NLS
+            catch (DateTimeException ex) {
+                // Date is out of range.
+                // System.err.println(dayCellDate(dayCell) + " " + ex);
+                dayCell.setText(" ");
+                dayCell.setDisable(true);
             }
-
-            String cellText =
-                    dayCellFormatter.withLocale(locale)
-                            .withChronology(chrono)
-//                                 .withSymbols(DateTimeFormatSymbols.of(locale))
-                            .format(cDate);
-            dayCell.setText(cellText);
-
-            dayCell.updateItem(date, false);
         }
     }
 
     private int getDaysPerWeek() {
-        ValueRange range = getChronology().range(DAY_OF_WEEK);
+        ValueRange range = getPrimaryChronology().range(DAY_OF_WEEK);
         return (int) (range.getMaximum() - range.getMinimum() + 1);
     }
 
     private int getMonthsPerYear() {
-        ValueRange range = getChronology().range(MONTH_OF_YEAR);
+        ValueRange range = getPrimaryChronology().range(MONTH_OF_YEAR);
         return (int) (range.getMaximum() - range.getMinimum() + 1);
     }
 
@@ -538,59 +599,81 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
     }
 
     protected void updateMonthYearPane() {
-        String str = formatMonth(displayedYearMonth.get());
+        YearMonth yearMonth = displayedYearMonth.get();
+        String str = formatMonth(yearMonth);
         monthLabel.setText(str);
 
-        str = formatYear(displayedYearMonth.get());
+        str = formatYear(yearMonth);
         yearLabel.setText(str);
         double width = computeTextWidth(yearLabel.getFont(), str, 0);
         if (width > yearLabel.getMinWidth()) {
             yearLabel.setMinWidth(width);
         }
+
+        Chronology chrono = datePicker.getChronology();
+        LocalDate firstDayOfMonth = yearMonth.atDay(1);
+        backMonthButton.setDisable(!isValidDate(chrono, firstDayOfMonth.minusDays(1)));
+        forwardMonthButton.setDisable(!isValidDate(chrono, firstDayOfMonth.plusMonths(1)));
+        backYearButton.setDisable(!isValidDate(chrono, firstDayOfMonth.minusYears(1)));
+        forwardYearButton.setDisable(!isValidDate(chrono, firstDayOfMonth.plusYears(1)));
     }
 
     private String formatMonth(YearMonth yearMonth) {
         Locale locale = getLocale();
-        ChronoLocalDate cDate = toChrono(yearMonth.atDay(1));
+        Chronology chrono = getPrimaryChronology();
+        try {
+            ChronoLocalDate cDate = chrono.date(yearMonth.atDay(1));
 
-        String str = monthFormatterSO.withLocale(getLocale())
-                .withChronology(getChronology())
-                .format(cDate);
-        if (Character.isDigit(str.charAt(0))) {
-            // Fallback. The standalone format returned a number, so use standard format instead.
-            str = monthFormatter.withLocale(getLocale())
-                    .withChronology(getChronology())
+            String str = monthFormatterSO.withLocale(getLocale())
+                    .withChronology(chrono)
                     .format(cDate);
+            if (Character.isDigit(str.charAt(0))) {
+                // Fallback. The standalone format returned a number, so use standard format instead.
+                str = monthFormatter.withLocale(getLocale())
+                        .withChronology(chrono)
+                        .format(cDate);
+            }
+            return titleCaseWord(str);
         }
-        return titleCaseWord(str);
+        catch (DateTimeException ex) {
+            // Date is out of range.
+            return "";
+        }
     }
 
     private String formatYear(YearMonth yearMonth) {
         Locale locale = getLocale();
-        DateTimeFormatter formatter = yearFormatter;
-        ChronoLocalDate cDate = toChrono(yearMonth.atDay(1));
-        int era = cDate.getEra().getValue();
-        int nEras = getChronology().eras().size();
+        Chronology chrono = getPrimaryChronology();
+        try {
+            DateTimeFormatter formatter = yearFormatter;
+            ChronoLocalDate cDate = chrono.date(yearMonth.atDay(1));
+            int era = cDate.getEra().getValue();
+            int nEras = chrono.eras().size();
 
-        /*if (cDate.get(YEAR) < 0) {
-            formatter = yearForNegYearFormatter;
-        } else */
-        if ((nEras == 2 && era == 0) || nEras > 2) {
-            formatter = yearWithEraFormatter;
+            /*if (cDate.get(YEAR) < 0) {
+                formatter = yearForNegYearFormatter;
+            } else */
+            if ((nEras == 2 && era == 0) || nEras > 2) {
+                formatter = yearWithEraFormatter;
+            }
+
+            // Fixme: Format Japanese era names with Japanese text.
+            String str = formatter.withLocale(getLocale())
+                    .withChronology(chrono)
+                    .withDecimalStyle(DecimalStyle.of(getLocale()))
+                    .format(cDate);
+
+            return str;
         }
-
-        // Fixme: Format Japanese era names with Japanese text.
-        String str = formatter.withLocale(getLocale())
-                .withChronology(getChronology())
-//                               .withSymbols(DateTimeFormatSymbols.of(getLocale()))
-                .format(cDate);
-
-        return str;
+        catch (DateTimeException ex) {
+            // Date is out of range.
+            return "";
+        }
     }
 
     // Ensures that month and day names are titlecased (capitalized).
     private String titleCaseWord(String str) {
-        if (!str.isEmpty()) {
+        if (str.length() > 0) {
             int firstChar = str.codePointAt(0);
             if (!Character.isTitleCase(firstChar)) {
                 str = new String(new int[]{Character.toTitleCase(firstChar)}, 0, 1) +
@@ -632,15 +715,27 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
         goToDate(dayCellDate(dateCell).plus(offset, unit));
     }
 
+    protected void forward(int offset, ChronoUnit unit) {
+        YearMonth yearMonth = displayedYearMonth.get();
+        DateCell dateCell = lastFocusedDayCell;
+        if (dateCell == null || !dayCellDate(dateCell).getMonth().equals(yearMonth.getMonth())) {
+            dateCell = findDayCellForDate(yearMonth.atDay(1));
+        }
+        goToDayCell(dateCell, offset, unit);
+    }
+
     // public for behavior class
     public void goToDate(LocalDate date) {
-        displayedYearMonth.set(YearMonth.from(date));
-        findDayCellForDate(date).requestFocus();
+        if (isValidDate(datePicker.getChronology(), date)) {
+            displayedYearMonth.set(YearMonth.from(date));
+            findDayCellForDate(date).requestFocus();
+        }
     }
 
     // public for behavior class
     public void selectDayCell(DateCell dateCell) {
-        setValue(fromLocalDate(dayCellDate(dateCell)));
+        datePicker.setValue(fromLocalDate(dayCellDate(dateCell)));
+//        datePicker.hide();
     }
 
     private DateCell findDayCellForDate(LocalDate date) {
@@ -653,7 +748,7 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
     }
 
     void clearFocus() {
-        LocalDate focusDate = toLocalDate(getValue());
+        LocalDate focusDate = toLocalDate(datePicker.getValue());
         if (focusDate == null) {
             focusDate = LocalDate.now();
         }
@@ -665,10 +760,18 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
             // focus month spinner (should not happen)
             backMonthButton.requestFocus();
         }
+
+        // RT-31857
+        if (backMonthButton.getWidth() == 0) {
+            backMonthButton.requestLayout();
+            forwardMonthButton.requestLayout();
+            backYearButton.requestLayout();
+            forwardYearButton.requestLayout();
+        }
     }
 
     protected void createDayCells() {
-        EventHandler<MouseEvent> dayCellActionHandler = new EventHandler<MouseEvent>() {
+        final EventHandler<MouseEvent> dayCellActionHandler = new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent ev) {
                 if (ev.getButton() != MouseButton.PRIMARY) {
@@ -676,15 +779,8 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
                 }
 
                 DateCell dayCell = (DateCell) ev.getSource();
-                LocalDate date = dayCellDate(dayCell);
-                YearMonth yearMonth = YearMonth.from(date);
-
-                if (yearMonth.equals(displayedYearMonth.get())) {
-                    selectDayCell(dayCell);
-                } else {
-                    // previous or next month
-                    goToDate(date);
-                }
+                selectDayCell(dayCell);
+                lastFocusedDayCell = dayCell;
             }
         };
 
@@ -701,8 +797,8 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
 
     private DateCell createDayCell() {
         DateCell cell = null;
-        if (getDayCellFactory() != null) {
-            cell = getDayCellFactory().call(this);
+        if (datePicker.getDayCellFactory() != null) {
+            cell = datePicker.getDayCellFactory().call(datePicker);
         }
         if (cell == null) {
             cell = new DateCell();
@@ -715,21 +811,32 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
         return Locale.getDefault(Locale.Category.FORMAT);
     }
 
-//    protected Chronology getChronology() {
-//        return datePicker.getChronology();
-//    }
-
-    protected ChronoLocalDate toChrono(LocalDate date) {
-        return getChronology().date(date);
+    /**
+     * The primary chronology for display. This may be overridden to be different than the DatePicker chronology. For
+     * example DatePickerHijrahContent uses ISO as primary and Hijrah as a secondary chronology.
+     */
+    protected Chronology getPrimaryChronology() {
+        return datePicker.getChronology();
     }
 
-    // Added
+    protected boolean isValidDate(Chronology chrono, LocalDate date) {
+        try {
+            if (date != null) {
+                chrono.date(date);
+            }
+            return true;
+        }
+        catch (DateTimeException ex) {
+            return false;
+        }
+    }
+
+    // JIDE added method are below
 
     /**
      * A custom cell factory can be provided to customize individual day cells in the DatePicker popup. Refer to {@link
-     * DateCell} and {@link Cell} for more information on cell factories.
-     * Example:
-     * <p>
+     * DateCell} and {@link Cell} for more information on cell factories. Example:
+     * <p/>
      * <pre>{@code
      * final Callback&lt;DatePicker, DateCell&gt; dayCellFactory = new Callback&lt;DatePicker, DateCell&gt;() {
      *     public DateCell call(final DatePicker datePicker) {
@@ -776,11 +883,11 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
 
     /**
      * The calendar system used for parsing, displaying, and choosing dates in the DatePicker control.
-     * <p>
+     * <p/>
      * <p>The default value is returned from a call to Chronology.ofLocale(Locale.getDefault(Locale.Category.FORMAT)).
-     * The default is usually {@link IsoChronology} unless provided explicitly in the {@link
-     * Locale} by use of a Locale calendar extension.
-     * <p>
+     * The default is usually {@link IsoChronology} unless provided explicitly in the {@link Locale} by use of a Locale
+     * calendar extension.
+     * <p/>
      * Setting the value to {@code null} will restore the default chronology.
      */
     public final ObjectProperty<Chronology> chronologyProperty() {
@@ -811,27 +918,66 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
         chronology.setValue(value);
     }
 
+    /**
+     * @treatAsPrivate implementation detail
+     */
+    private static class StyleableProperties {
+        private static final String country =
+                Locale.getDefault(Locale.Category.FORMAT).getCountry();
+        private static final CssMetaData<AbstractDatePopupContent, Boolean> SHOW_WEEK_NUMBERS =
+                new CssMetaData<AbstractDatePopupContent, Boolean>("-fx-show-week-numbers",
+                        BooleanConverter.getInstance(),
+                        (!country.isEmpty() &&
+                                ControlResources.getNonTranslatableString("DatePicker.showWeekNumbers").contains(country))) {
+                    @Override
+                    public boolean isSettable(AbstractDatePopupContent n) {
+                        return n.showWeekNumbers == null || !n.showWeekNumbers.isBound();
+                    }
+
+                    @Override
+                    public StyleableProperty<Boolean> getStyleableProperty(AbstractDatePopupContent n) {
+                        return (StyleableProperty) n.showWeekNumbersProperty();
+                    }
+                };
+
+        private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
+
+        static {
+            final List<CssMetaData<? extends Styleable, ?>> styleables =
+                    new ArrayList<CssMetaData<? extends Styleable, ?>>(Control.getClassCssMetaData());
+            Collections.addAll(styleables,
+                    SHOW_WEEK_NUMBERS
+            );
+            STYLEABLES = Collections.unmodifiableList(styleables);
+        }
+    }
 
     /**
      * Whether the DatePicker popup should display a column showing week numbers.
-     * <p>
+     * <p/>
      * <p>The default value is false unless otherwise defined in a resource bundle for the current locale.
-     * <p>
+     * <p/>
      * <p>This property may be toggled by the end user by using a context menu in the DatePicker popup, so it is
      * recommended that applications save and restore the value between sessions.
      */
     public final BooleanProperty showWeekNumbersProperty() {
         if (showWeekNumbers == null) {
-            boolean localizedDefault = "true".equals(ControlResources.getNonTranslatableString("DatePicker.showWeekNumbers")); //NON-NLS
-            showWeekNumbers = new SimpleBooleanProperty(localizedDefault) {
+            String country = Locale.getDefault(Locale.Category.FORMAT).getCountry();
+            boolean localizedDefault =
+                    (!country.isEmpty() &&
+                            ControlResources.getNonTranslatableString("DatePicker.showWeekNumbers").contains(country));
+            showWeekNumbers = new StyleableBooleanProperty(localizedDefault) {
                 @Override
                 protected void invalidated() {
                     super.invalidated();
                     updateGrid();
+                    updateWeeknumberDateCells();
                 }
-                //                @Override public CssMetaData getCssMetaData() {
-//                    return StyleableProperties.SHOW_WEEK_NUMBERS;
-//                }
+
+                @Override
+                public CssMetaData<AbstractDatePopupContent, Boolean> getCssMetaData() {
+                    return StyleableProperties.SHOW_WEEK_NUMBERS;
+                }
 
                 @Override
                 public Object getBean() {
@@ -840,7 +986,7 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
 
                 @Override
                 public String getName() {
-                    return "showWeekNumbers"; //NON-NLS
+                    return "showWeekNumbers";
                 }
             };
         }
@@ -897,6 +1043,11 @@ public abstract class AbstractDatePopupContent<T> extends VBox implements PopupC
      * Subclass override this method to convert from the value type that is being edited to the LocalDate.
      */
     protected abstract LocalDate toLocalDate(T value);
+
+    private void updateDisplayedYearMonth() {
+        LocalDate date = toLocalDate(getValue());
+        displayedYearMonth.set((date != null) ? YearMonth.from(date) : YearMonth.now());
+    }
 
     // Copied from Utils
     static final Text helper = new Text();

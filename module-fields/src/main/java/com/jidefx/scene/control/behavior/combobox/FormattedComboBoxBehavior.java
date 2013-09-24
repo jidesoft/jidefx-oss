@@ -29,7 +29,7 @@ public class FormattedComboBoxBehavior<T> extends ComboBoxBaseBehavior<T> {
      *
      */
     public FormattedComboBoxBehavior(FormattedComboBox<T> comboBox) {
-        super(comboBox);
+        super(comboBox, COMBO_BOX_BINDINGS);
     }
 
     /**
@@ -43,11 +43,6 @@ public class FormattedComboBoxBehavior<T> extends ComboBoxBaseBehavior<T> {
         COMBO_BOX_BINDINGS.add(new KeyBinding(UP, KEY_PRESSED, "selectPrevious")); //NON-NLS
         COMBO_BOX_BINDINGS.add(new KeyBinding(DOWN, "selectNext")); //NON-NLS
         COMBO_BOX_BINDINGS.addAll(COMBO_BOX_BASE_BINDINGS);
-    }
-
-    @Override
-    protected List<KeyBinding> createKeyBindings() {
-        return COMBO_BOX_BINDINGS;
     }
 
     @Override

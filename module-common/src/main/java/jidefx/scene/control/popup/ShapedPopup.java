@@ -23,10 +23,12 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.PopupControl;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Path;
 import javafx.stage.Window;
@@ -96,7 +98,13 @@ public class ShapedPopup extends PopupControl {
 
         closeButton.setVisible(isCloseButtonVisible());
 
-        ((Group) getScene().getRoot()).getChildren().setAll(anchorPane);
+        Parent root = getScene().getRoot();
+        if(root instanceof Group) {
+            ((Group) root).getChildren().setAll(anchorPane);
+        }
+        else if(root instanceof Pane) {
+            ((Pane) root).getChildren().setAll(anchorPane);
+        }
 
         InvalidationListener invalidationListener = new InvalidationListener() {
             @Override

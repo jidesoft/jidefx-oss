@@ -8,6 +8,7 @@ package jidefx.scene.control.decoration;
 
 import javafx.geometry.*;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.layout.Region;
 
 import java.util.Arrays;
@@ -110,6 +111,9 @@ public class DecorationUtils {
             else {
                 targetNode.getProperties().put(PROPERTY_DECORATOR, decorator);
             }
+            if (targetNode instanceof Parent){
+                ((Parent) targetNode).requestLayout();
+            }
         }
     }
 
@@ -174,6 +178,9 @@ public class DecorationUtils {
         if (targetNode != null) {
             targetNode.getProperties().remove(PROPERTY_DECORATOR);
             targetNode.getProperties().remove(DecorationUtils.PROPERTY_TARGET_DECORATOR_STATUS);
+            if (targetNode instanceof Parent){
+                ((Parent) targetNode).requestLayout();
+            }
         }
     }
 
@@ -215,6 +222,9 @@ public class DecorationUtils {
                     }
                 }
             }
+            if (targetNode instanceof Parent){
+                ((Parent) targetNode).requestLayout();
+            }
         }
     }
 
@@ -232,9 +242,9 @@ public class DecorationUtils {
     /**
      * A util method that computes the bounds of the decorations.
      *
-     * @param targetNode   the target node.
+     * @param targetNode     the target node.
      * @param decorationNode the decoration node.
-     * @param decorator    the decorator.
+     * @param decorator      the decorator.
      * @return the bounds of the decoration.
      */
     private static Bounds computeDecorationBounds(Node targetNode, Node decorationNode, Decorator decorator) {
@@ -243,7 +253,8 @@ public class DecorationUtils {
 
         // we use local coordinate to do the calculation
         // default TOP_LEFT
-        Bounds targetBounds = targetNode.getBoundsInLocal();  // ensure position will be right after the transition is applied
+//        Bounds targetBounds = targetNode.getBoundsInLocal();  // ensure position will be right after the transition is applied. it caused a shift of the decoration when the field gets focus.
+        Bounds targetBounds = targetNode.getLayoutBounds();  // this will probably not work when the node is in transition
 
         // adjust to center of the decoration node
         double x = targetBounds.getMinX() - width / 2;
@@ -317,7 +328,6 @@ public class DecorationUtils {
 
         return adjustBounds(decorationNode.getLayoutBounds(), new BoundingBox(x, y, width, height));
     }
-
 
     /**
      * A util method that computes the bounds of the decorations.

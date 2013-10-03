@@ -32,9 +32,7 @@ public interface Editor<T> {
      *
      * @return the value.
      */
-    default T getValue() {
-        return observableValue().getValue();
-    }
+    T getValue();
 
     /**
      * Sets the value to the editor. For example, if the editor is a ComboBox, this method should call {@code

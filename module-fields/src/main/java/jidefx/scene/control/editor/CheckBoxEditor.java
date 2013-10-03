@@ -19,6 +19,11 @@ public class CheckBoxEditor extends CheckBox implements Editor<Boolean> {
     }
 
     @Override
+    public Boolean getValue() {
+        return observableValue().getValue();
+    }
+
+    @Override
     public void setValue(Boolean value) {
         setSelected(value);
     }

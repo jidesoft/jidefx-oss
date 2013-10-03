@@ -24,6 +24,11 @@ public class TextFieldEditor extends TextField implements Editor<String>, LazyIn
     }
 
     @Override
+    public String getValue() {
+        return observableValue().getValue();
+    }
+
+    @Override
     public void initialize(Class<String> clazz, EditorContext context) {
         Object editable = context != null ? context.getProperties().get(EditorContext.PROPERTY_EDITABLE) : null;
         if (editable instanceof Boolean) {

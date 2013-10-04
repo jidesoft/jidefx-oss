@@ -6,22 +6,25 @@
 
 package jidefx.scene.control.field;
 
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
-import jidefx.scene.control.decoration.DecorationUtils;
-import jidefx.scene.control.decoration.Decorator;
-import jidefx.scene.control.decoration.PredefinedDecorators;
+import jidefx.scene.control.decoration.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -87,7 +90,7 @@ import java.util.Map;
  * </ul>
  */
 @SuppressWarnings({"Convert2Lambda", "SpellCheckingInspection"})
-public class MaskTextField extends TextField /*implements DecorationSupport */ {
+public class MaskTextField extends TextField implements DecorationSupport {
     private static final String STYLE_CLASS_DEFAULT = "mask-combo-box"; //NON-NLS
 
     public static final char INPUT_MASK_LETTER = 'A';
@@ -148,7 +151,7 @@ public class MaskTextField extends TextField /*implements DecorationSupport */ {
      * styles.
      */
     protected void initializeStyle() {
-        getStyleClass().addAll(STYLE_CLASS_DEFAULT);
+        getStyleClass().addAll(STYLE_CLASS_DEFAULT, DecorationSupport.STYLE_CLASS_DECORATION_SUPPORT);
     }
 
     /**
@@ -1001,37 +1004,37 @@ public class MaskTextField extends TextField /*implements DecorationSupport */ {
         clearButtonVisibleProperty().set(clearButtonVisible);
     }
 
-//    // For decoration
-//    @Override
-//    protected void layoutChildren() {
-//        prepareDecorations();
-//        super.layoutChildren();
-//        Platform.runLater(this::layoutDecorations);
-//    }
-//
-//    private DecorationDelegate _operator;
-//
-//    public void prepareDecorations() {
-//        if (_operator == null) {
-//            _operator = new DecorationDelegate(this);
-//        }
-//        _operator.prepareDecorations();
-//    }
-//
-//    public void layoutDecorations() {
-//        _operator.layoutDecorations();
-//    }
-//
-//    // For interface DecorationSupport
-//    @Override
-//    public ObservableList<Node> getChildren() {
-//        return super.getChildren();
-//    }
-//
-//    @Override
-//    public void positionInArea(Node child, double areaX, double areaY, double areaWidth, double areaHeight, double areaBaselineOffset, HPos halignment, VPos valignment) {
-//        super.positionInArea(child, areaX, areaY, areaWidth, areaHeight, areaBaselineOffset, halignment, valignment);
-//    }
-//
-//    // end decoration
+    // For decoration
+    @Override
+    protected void layoutChildren() {
+        prepareDecorations();
+        super.layoutChildren();
+        Platform.runLater(this::layoutDecorations);
+    }
+
+    private DecorationDelegate _operator;
+
+    public void prepareDecorations() {
+        if (_operator == null) {
+            _operator = new DecorationDelegate(this);
+        }
+        _operator.prepareDecorations();
+    }
+
+    public void layoutDecorations() {
+        _operator.layoutDecorations();
+    }
+
+    // For interface DecorationSupport
+    @Override
+    public ObservableList<Node> getChildren() {
+        return super.getChildren();
+    }
+
+    @Override
+    public void positionInArea(Node child, double areaX, double areaY, double areaWidth, double areaHeight, double areaBaselineOffset, HPos halignment, VPos valignment) {
+        super.positionInArea(child, areaX, areaY, areaWidth, areaHeight, areaBaselineOffset, halignment, valignment);
+    }
+
+    // end decoration
 }

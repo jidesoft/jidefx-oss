@@ -157,7 +157,7 @@ public class FXUtils {
     @FunctionalInterface
     public interface ConditionHandler<T> extends Handler<T> {
         /**
-         * If this method returns true, the recursive call will stop at the Node and will not call to its children.
+         * If this method returns true, the recursive call will stop at the Node and the action will not be called on itself and its children.
          *
          * @param c the Node
          * @return true or false.
@@ -224,12 +224,12 @@ public class FXUtils {
 
     @SuppressWarnings("unchecked")
     private static <T> void setRecursively0(final T c, final Handler<T> handler) {
-        if (handler.condition(c)) {
-            handler.action(c);
-        }
-
         if (handler instanceof ConditionHandler && ((ConditionHandler<T>) handler).stopCondition(c)) {
             return;
+        }
+
+        if (handler.condition(c)) {
+            handler.action(c);
         }
 
         List<Node> children = null;

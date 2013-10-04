@@ -115,51 +115,57 @@ public class BalloonDemo extends AbstractFxDemo {
 
         _roundedRadius = new IntegerField(0, 30);
         _roundedRadius.setValue(6);
+        _roundedRadius.setSpinnersVisible(true);
         Label radiusLabel = new Label("Rounded Radius: ");
         optionPane.add(radiusLabel);
-        optionPane.add(_roundedRadius.asSpinner(), new CC().wrap());
+        optionPane.add(_roundedRadius, new CC().wrap());
         _roundedRadius.installAdjustmentMouseHandler(radiusLabel);
 
         _arrowPosition = new NumberField(NumberField.NumberType.Percent);
         _arrowPosition.setValue(0.45);
+        _arrowPosition.setSpinnersVisible(true);
         Label arrowPositionLabel = new Label("Arrow Position: ");
         optionPane.add(arrowPositionLabel);
-        optionPane.add(_arrowPosition.asSpinner(), new CC().wrap());
+        optionPane.add(_arrowPosition, new CC().wrap());
         _arrowPosition.installAdjustmentMouseHandler(arrowPositionLabel);
 
         _arrowBasePosition = new NumberField(NumberField.NumberType.Percent);
         _arrowBasePosition.setValue(0.55);
         Label arrowBasePositionLabel = new Label("Arrow Base Position: ");
         optionPane.add(arrowBasePositionLabel);
-        optionPane.add(_arrowBasePosition.asSpinner(), new CC().wrap());
+        optionPane.add(_arrowBasePosition, new CC().wrap());
         _arrowBasePosition.installAdjustmentMouseHandler(arrowBasePositionLabel);
 
         _arrowHeight = new IntegerField(0, 100);
         _arrowHeight.setValue(30);
+        _arrowHeight.setSpinnersVisible(true);
         Label arrowLengthLabel = new Label("Arrow Height: ");
         optionPane.add(arrowLengthLabel);
-        optionPane.add(_arrowHeight.asSpinner(), new CC().wrap());
+        optionPane.add(_arrowHeight, new CC().wrap());
         _arrowHeight.installAdjustmentMouseHandler(arrowLengthLabel);
 
         _arrowWidth = new IntegerField(0, 100);
         _arrowWidth.setValue(20);
+        _arrowWidth.setSpinnersVisible(true);
         Label arrowWidthLabel = new Label("Arrow Width: ");
         optionPane.add(arrowWidthLabel);
-        optionPane.add(_arrowWidth.asSpinner(), new CC().wrap());
+        optionPane.add(_arrowWidth, new CC().wrap());
         _arrowWidth.installAdjustmentMouseHandler(arrowWidthLabel);
 
         _xOffset = new IntegerField(-100, 100);
         _xOffset.setValue(0);
+        _xOffset.setSpinnersVisible(true);
         Label widthLabel = new Label("Offset X: ");
         optionPane.add(widthLabel);
-        optionPane.add(_xOffset.asSpinner(), new CC().wrap());
+        optionPane.add(_xOffset, new CC().wrap());
         _xOffset.installAdjustmentMouseHandler(widthLabel);
 
         _yOffset = new IntegerField(-100, 100);
         _yOffset.setValue(0);
+        _yOffset.setSpinnersVisible(true);
         Label heightLabel = new Label("Offset Y: ");
         optionPane.add(heightLabel);
-        optionPane.add(_yOffset.asSpinner(), new CC().wrap());
+        optionPane.add(_yOffset, new CC().wrap());
         _yOffset.installAdjustmentMouseHandler(heightLabel);
 
         InvalidationListener adjustListener = new InvalidationListener() {

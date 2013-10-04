@@ -3,6 +3,7 @@ package jidefx.scene.control.decoration;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import jidefx.utils.PredefinedShapes;
@@ -163,6 +164,7 @@ public class PredefinedDecorators {
             button.getStyleClass().addAll(STYLE_CLASS_DEFAULT);
             button.setFocusTraversable(false);
             button.setPickOnBounds(true);
+            button.setCursor(Cursor.DEFAULT);
 
             shape.setFocusTraversable(false);
             button.setGraphic(shape);

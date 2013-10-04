@@ -8,19 +8,19 @@ package jidefx.scene.control.field;
 
 import com.sun.javafx.scene.control.skin.TextFieldSkin;
 import com.sun.javafx.scene.text.HitInfo;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
+import javafx.geometry.*;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -31,10 +31,7 @@ import javafx.scene.input.*;
 import javafx.scene.shape.Shape;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-import jidefx.scene.control.decoration.DecorationPane;
-import jidefx.scene.control.decoration.DecorationUtils;
-import jidefx.scene.control.decoration.Decorator;
-import jidefx.scene.control.decoration.PredefinedDecorators;
+import jidefx.scene.control.decoration.*;
 import jidefx.scene.control.editor.Editor;
 import jidefx.scene.control.field.verifier.IntegerRangePatternVerifier;
 import jidefx.scene.control.field.verifier.PatternVerifier;
@@ -64,32 +61,26 @@ import java.util.regex.Pattern;
  * @param <T> the data type of the value in the {@code FormattedTextField}
  */
 @SuppressWarnings({"Convert2Lambda", "SpellCheckingInspection", "UnusedDeclaration"})
-public class FormattedTextField<T> extends TextField /*implements DecorationSupport */ implements Editor<T> {
+public class FormattedTextField<T> extends TextField implements DecorationSupport, Editor<T> {
     private static final String STYLE_CLASS_DEFAULT = "formatted-text-field"; //NON-NLS
     private static final String STYLE_CLASS_NO_BACKGROUND_BUTTON = "no-background-button"; //NON-NLS
     private static final String STYLE_CLASS_INCREASE_BUTTON_ = "increase-button"; //NON-NLS
     private static final String STYLE_CLASS_DECREASE_BUTTON = "decrease-button"; //NON-NLS
-
     private static final String PROPERTY_FORMATTED_TEXT_FIELD_ADJUSTMENT_MOUSE_HANDLER = "FormattedTextField.AdjustmentMouseHandler"; //NON-NLS
-
     private StringProperty _patternProperty;
     private StringProperty _regularExpressionProperty;
     private BooleanProperty _autoAdvanceProperty;
     private BooleanProperty _autoReformatProperty;
     private BooleanProperty _autoSelectAllProperty;
     private boolean _internalAutoSelectAll = true;
-
     private ObjectProperty<T> _valueProperty;
     private ObjectProperty<T> _defaultValueProperty;
     private ObjectProperty<StringConverter<T>> _stringConverterProperty;
-
     private BooleanProperty _clearbuttonVisibleProperty;
     private Decorator<Button> _clearButtonDecorator;
-
     private BooleanProperty _spinnersVisibleProperty;
     private ObservableMap<String, Callback<String, Boolean>> _patternVerifiers;
     private String _fixedText;
-
     private DecorationPane _decorationPane;
     private Decorator<Button> _increaseDecorator;
     private Decorator<Button> _decreaseDecorator;
@@ -125,7 +116,7 @@ public class FormattedTextField<T> extends TextField /*implements DecorationSupp
      * styles.
      */
     protected void initializeStyle() {
-        getStyleClass().addAll(STYLE_CLASS_DEFAULT);
+        getStyleClass().addAll(STYLE_CLASS_DEFAULT, DecorationSupport.STYLE_CLASS_DECORATION_SUPPORT);
     }
 
     /**
@@ -173,7 +164,6 @@ public class FormattedTextField<T> extends TextField /*implements DecorationSupp
 
     // TODO: not used yet. The original purpose is to enforce setText call so that it is formatted.
     private boolean enforcing = true;
-
     private String comboBoxStyleClass = "combo-box-field"; //NON-NLS
     private String textInputStyleClass = "text-input"; //NON-NLS
 
@@ -865,20 +855,6 @@ public class FormattedTextField<T> extends TextField /*implements DecorationSupp
         return regex;
     }
 
-    private boolean verifyMatcher(String regex, String sampleText) {
-        Matcher matcher = Pattern.compile(regex).matcher(sampleText);
-        if (matcher != null && matcher.find()) {
-            for (int i = 1; i <= matcher.groupCount(); i++) {
-                String group = matcher.group(i);
-                if (group == null || group.trim().isEmpty()) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
     /**
      * Sets the regular expression pattern. This regular expression pattern will be used to parse a string and separate
      * it into groups.
@@ -895,6 +871,20 @@ public class FormattedTextField<T> extends TextField /*implements DecorationSupp
      */
     public void setRegularExpression(String regex) {
         regularExpressionProperty().set(regex);
+    }
+
+    private boolean verifyMatcher(String regex, String sampleText) {
+        Matcher matcher = Pattern.compile(regex).matcher(sampleText);
+        if (matcher != null && matcher.find()) {
+            for (int i = 1; i <= matcher.groupCount(); i++) {
+                String group = matcher.group(i);
+                if (group == null || group.trim().isEmpty()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     public ObjectProperty<StringConverter<T>> stringConverterProperty() {
@@ -1610,6 +1600,7 @@ public class FormattedTextField<T> extends TextField /*implements DecorationSupp
         button.setPrefHeight(spinnerButtonSize);
         button.setFocusTraversable(false);
         button.setPickOnBounds(true);
+        button.setCursor(Cursor.DEFAULT);
 
         arrowIcon.setFocusTraversable(false);
         button.setGraphic(arrowIcon);
@@ -1695,6 +1686,7 @@ public class FormattedTextField<T> extends TextField /*implements DecorationSupp
         button.setPrefHeight(spinnerButtonSize);
         button.setFocusTraversable(false);
         button.setPickOnBounds(true);
+        button.setCursor(Cursor.DEFAULT);
 
         arrowIcon.setFocusTraversable(false);
         button.setGraphic(arrowIcon);
@@ -1844,40 +1836,6 @@ public class FormattedTextField<T> extends TextField /*implements DecorationSupp
         comboBoxLikeProperty().set(comboBoxLie);
     }
 
-//    // For decoration
-//    @Override
-//    protected void layoutChildren() {
-//        prepareDecorations();
-//        super.layoutChildren();
-//        Platform.runLater(this::layoutDecorations);
-//    }
-//
-//    private DecorationDelegate _operator;
-//
-//    public void prepareDecorations() {
-//        if (_operator == null) {
-//            _operator = new DecorationDelegate(this);
-//        }
-//        _operator.prepareDecorations();
-//    }
-//
-//    public void layoutDecorations() {
-//        _operator.layoutDecorations();
-//    }
-//
-//    // For interface DecorationSupport
-//    @Override
-//    public ObservableList<Node> getChildren() {
-//        return super.getChildren();
-//    }
-//
-//    @Override
-//    public void positionInArea(Node child, double areaX, double areaY, double areaWidth, double areaHeight, double areaBaselineOffset, HPos halignment, VPos valignment) {
-//        super.positionInArea(child, areaX, areaY, areaWidth, areaHeight, areaBaselineOffset, halignment, valignment);
-//    }
-//
-//    // end decoration
-
     /**
      * Installs a mouse handler to the node so that when user drags the node, the value in the FormattedTextField will
      * be adjusted. Pressing on the adjustment node will make the field getting focus and select the current group.
@@ -2026,10 +1984,11 @@ public class FormattedTextField<T> extends TextField /*implements DecorationSupp
     }
 
     /**
-     * Return a node which can be used as a spinner control. If you use this node, you don't need to add the field to a
-     * DecorationPane to show the spinner buttons because the node itself is a DecorationPane. In addition to that, this
-     * node also provides a better support for the {@link #setSpinnerStyle(SpinnerStyle)} call especially when the
-     * spinner buttons are outside the field.
+     * Returns a node which can be used as a spinner control. Instead of using the FormattedTextField, you will use the
+     * returned node and add it to parent. In fact, you can display the spinner control inside the field by calling
+     * {@link #setSpinnersVisible(boolean)} and set it to true. However, not all spinner styles are supported this way.
+     * For example, all spinner styles that start with OUTSIDE_ are not supported very well because it doesn't have
+     * outer border. If you use the node returned from this method, all spinner styles are supported.
      *
      * @return a node that can be used as a spinner control.
      */
@@ -2038,10 +1997,11 @@ public class FormattedTextField<T> extends TextField /*implements DecorationSupp
     }
 
     /**
-     * Return a node which can be used as a spinner control. If you use this node, you don't need to add the field to a
-     * DecorationPane to show the spinner buttons because the node itself is a DecorationPane. In addition to that, this
-     * node also provides a better support for the {@link #setSpinnerStyle(SpinnerStyle)} call especially when the
-     * spinner buttons are outside the field.
+     * Returns a node which can be used as a spinner control. Instead of using the FormattedTextField, you will use the
+     * returned node and add it to parent. In fact, you can display the spinner control inside the field by calling
+     * {@link #setSpinnersVisible(boolean)} and set it to true. However, not all spinner styles are supported this way.
+     * For example, all spinner styles that start with OUTSIDE_ are not supported very well because it doesn't have
+     * outer border. If you use the node returned from this method, all spinner styles are supported.
      *
      * @param style the SpinnerStyle
      * @return a node that can be used as a spinner control.
@@ -2108,5 +2068,38 @@ public class FormattedTextField<T> extends TextField /*implements DecorationSupp
         spinnerStyleProperty().set(spinnerStyle);
     }
 
+    // For decoration
+    @Override
+    protected void layoutChildren() {
+        prepareDecorations();
+        super.layoutChildren();
+        Platform.runLater(this::layoutDecorations);
+    }
+
+    private DecorationDelegate _operator;
+
+    public void prepareDecorations() {
+        if (_operator == null) {
+            _operator = new DecorationDelegate(this);
+        }
+        _operator.prepareDecorations();
+    }
+
+    public void layoutDecorations() {
+        _operator.layoutDecorations();
+    }
+
+    // For interface DecorationSupport
+    @Override
+    public ObservableList<Node> getChildren() {
+        return super.getChildren();
+    }
+
+    @Override
+    public void positionInArea(Node child, double areaX, double areaY, double areaWidth, double areaHeight, double areaBaselineOffset, HPos halignment, VPos valignment) {
+        super.positionInArea(child, areaX, areaY, areaWidth, areaHeight, areaBaselineOffset, halignment, valignment);
+    }
+
+    // end decoration
 }
 

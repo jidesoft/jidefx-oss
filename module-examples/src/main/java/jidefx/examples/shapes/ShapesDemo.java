@@ -70,7 +70,8 @@ public class ShapesDemo extends AbstractFxDemo {
         });
         shapesList.getSelectionModel().select(0);
 
-        return new VBox(6, fieldLabel, field.asSpinner(), shapesList);
+        field.setSpinnersVisible(true);
+        return new VBox(6, fieldLabel, field, shapesList);
     }
 
     private void changeShape(String newValue, double size) {

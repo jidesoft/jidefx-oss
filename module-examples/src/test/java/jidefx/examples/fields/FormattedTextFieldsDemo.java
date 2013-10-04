@@ -138,7 +138,7 @@ public class FormattedTextFieldsDemo extends AbstractFxDemo {
 
         Label label2 = new Label("new IntegerField(0, 255).asSpinner()");
         pane.add(label2);
-        pane.add(new IntegerField(0, 255, 0).asSpinner(), new CC().wrap());
+        pane.add(new IntegerField(0, 255, 0), new CC().wrap());
 
         Label label3 = new Label("new FormattedTextField<String>()");
         Label label = new Label("...");
@@ -152,7 +152,7 @@ public class FormattedTextFieldsDemo extends AbstractFxDemo {
         twoNumberField.getPatternVerifiers().put("m", new IntegerRangePatternVerifier(10, 300, true));
         twoNumberField.getPatternVerifiers().put("n", new IntegerRangePatternVerifier(500, 2300, true));
         twoNumberField.setText("010-2000");
-        pane.add(twoNumberField.asSpinner(), new CC().wrap());
+        pane.add(twoNumberField, new CC().wrap());
 
         Label amountLabel = new Label("new NumberField(NumberType.Currency)");
         pane.add(amountLabel);
@@ -310,7 +310,7 @@ public class FormattedTextFieldsDemo extends AbstractFxDemo {
                             "field.setPattern(\"n\");\n" +
                             "field.getPatternVerifiers().put(\"n\", new IntegerRangePatternVerifier(30, 200, false));\n" +
                             "field.setText(\"125\");\n"
-            ), field.asSpinner()));
+            ), field));
             accordion.getPanes().add(pane1);
         }
 
@@ -326,7 +326,7 @@ public class FormattedTextFieldsDemo extends AbstractFxDemo {
                             "field.getPatternVerifiers().put(\"m\", new IntegerRangePatternVerifier(10, 300, true));\n" +
                             "field.getPatternVerifiers().put(\"n\", new IntegerRangePatternVerifier(500, 2300, true));\n" +
                             "field.setText(\"010-2000\");\n"
-            ), field.asSpinner()));
+            ), field));
             accordion.getPanes().add(pane1);
         }
 
@@ -351,7 +351,7 @@ public class FormattedTextFieldsDemo extends AbstractFxDemo {
                             "field.getPatternVerifiers().put(\"m\", new IntegerRangePatternVerifier(10, 300, true));\n" +
                             "field.getPatternVerifiers().put(\"n\", new IntegerRangePatternVerifier(500, 2300, true));\n" +
                             "field.setText(\"010-2000\");\n"
-            ), field.asSpinner()));
+            ), field));
             accordion.getPanes().add(pane1);
         }
 

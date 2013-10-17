@@ -8,11 +8,12 @@ package jidefx.utils;
 
 import com.sun.javafx.Utils;
 import javafx.application.Platform;
-import javafx.geometry.*;
+import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.SkinBase;
-import javafx.stage.PopupWindow;
 import javafx.stage.Screen;
 
 import java.util.List;
@@ -285,37 +286,38 @@ public class FXUtils {
         return null;
     }
 
-    /**
-     * calculate the layout point for a popup window based on the two points, windowPoint from popup window and
-     * parentPoint from parent node
-     *
-     * @param window      the popup window
-     * @param windowPoint align point inside popup window
-     * @param parent      parent node with which the popup window try to align
-     * @param parentPoint align point inside parent node
-     * @return the Point2D
-     */
-    public static Point2D pointRelativeTo(PopupWindow window, Point2D windowPoint, Node parent, Point2D parentPoint) {
-        if (parent == null || window == null) {
-            return null;
-        }
-
-        double anchorWidth = window.getWidth();
-        double anchorHeight = window.getHeight();
-
-        Point2D point2D = Utils.pointRelativeTo(parent, anchorWidth, anchorHeight, HPos.CENTER, VPos.BOTTOM, false);
-//        Rectangle2D screenBounds = JideFXUtilities.getScreenBounds(new Point2D(0, parentPoint.getY()));
-//        if (screenBounds.getMaxX() >= point2D.getX() + anchorWidth + parentPoint.getX() - windowPoint.getX()) {
-//            point2D = point2D.add(parentPoint.getX() - windowPoint.getX(), 0);
+// TODO: remove it for now to fix the compliation error in JDK8 b111.
+//    /**
+//     * calculate the layout point for a popup window based on the two points, windowPoint from popup window and
+//     * parentPoint from parent node
+//     *
+//     * @param window      the popup window
+//     * @param windowPoint align point inside popup window
+//     * @param parent      parent node with which the popup window try to align
+//     * @param parentPoint align point inside parent node
+//     * @return the Point2D
+//     */
+//    public static Point2D pointRelativeTo(PopupWindow window, Point2D windowPoint, Node parent, Point2D parentPoint) {
+//        if (parent == null || window == null) {
+//            return null;
 //        }
-//        if (screenBounds.getMaxY() >= point2D.getY() + anchorHeight + parentPoint.getY() - parent.getLayoutBounds().getMaxY() - windowPoint.getY()) {
-//            point2D = point2D.add(0, parentPoint.getY() - parent.getLayoutBounds().getMaxY() + windowPoint.getY());
-//        }
-
-        point2D = new Point2D(point2D.getX() + parentPoint.getX() - windowPoint.getX(), point2D.getY() + parentPoint.getY() - parent.getLayoutBounds().getMaxY() + windowPoint.getY());
-
-        return point2D;
-    }
+//
+//        double anchorWidth = window.getWidth();
+//        double anchorHeight = window.getHeight();
+//
+//        Point2D point2D = Utils.pointRelativeTo(parent, anchorWidth, anchorHeight, HPos.CENTER, VPos.BOTTOM, false);
+////        Rectangle2D screenBounds = JideFXUtilities.getScreenBounds(new Point2D(0, parentPoint.getY()));
+////        if (screenBounds.getMaxX() >= point2D.getX() + anchorWidth + parentPoint.getX() - windowPoint.getX()) {
+////            point2D = point2D.add(parentPoint.getX() - windowPoint.getX(), 0);
+////        }
+////        if (screenBounds.getMaxY() >= point2D.getY() + anchorHeight + parentPoint.getY() - parent.getLayoutBounds().getMaxY() - windowPoint.getY()) {
+////            point2D = point2D.add(0, parentPoint.getY() - parent.getLayoutBounds().getMaxY() + windowPoint.getY());
+////        }
+//
+//        point2D = new Point2D(point2D.getX() + parentPoint.getX() - windowPoint.getX(), point2D.getY() + parentPoint.getY() - parent.getLayoutBounds().getMaxY() + windowPoint.getY());
+//
+//        return point2D;
+//    }
 
     /**
      * Runs the runnable using Platform.runLater if the current thread is not on JavaFX Application Thread.

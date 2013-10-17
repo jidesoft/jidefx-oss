@@ -6,7 +6,7 @@
 
 package jidefx.utils.converter;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,9 +22,9 @@ public class PercentConverterTest {
 
     @Test
     public void testFromString() throws Exception {
-        Assert.assertEquals(0.5, _converter.fromString("50%"));
-        Assert.assertEquals(0.5, _converter.fromString("50"));
-        Assert.assertEquals(0.005, _converter.fromString("0.5"));
+        Assert.assertEquals(0.5, _converter.fromString("50%"), 0.001);
+        Assert.assertEquals(0.5, _converter.fromString("50"), 0.001);
+        Assert.assertEquals(0.005, _converter.fromString("0.5"), 0.001);
 
     }
 

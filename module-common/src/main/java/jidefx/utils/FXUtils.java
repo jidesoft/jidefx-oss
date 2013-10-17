@@ -286,7 +286,7 @@ public class FXUtils {
         return null;
     }
 
-// TODO: remove it for now to fix the compliation error in JDK8 b111.
+// TODO: remove it for now to fix the compilation error in JDK8 b111.
 //    /**
 //     * calculate the layout point for a popup window based on the two points, windowPoint from popup window and
 //     * parentPoint from parent node

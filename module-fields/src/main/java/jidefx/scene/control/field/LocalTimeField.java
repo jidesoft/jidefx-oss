@@ -6,6 +6,8 @@
 
 package jidefx.scene.control.field;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import jidefx.scene.control.field.verifier.PatternVerifierUtils;
@@ -32,7 +34,6 @@ public class LocalTimeField extends PopupField<LocalTime> {
     }
 
     public LocalTimeField(String pattern, LocalTime value) {
-        setDateTimeFormatter(DateTimeFormatter.ofPattern(pattern));
         setPattern(pattern);
         setValue(value);
     }
@@ -50,6 +51,17 @@ public class LocalTimeField extends PopupField<LocalTime> {
         super.initializeTextField();
         setSpinnersVisible(true);
         setPopupButtonVisible(false);
+    }
+
+    @Override
+    protected void registerListeners() {
+        super.registerListeners();
+        patternProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+                setDateTimeFormatter(DateTimeFormatter.ofPattern(getPattern()));
+            }
+        });
     }
 
     @Override

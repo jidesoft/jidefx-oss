@@ -501,7 +501,7 @@ public class ValidationUtils {
                     }
 
                     Label label;
-                    ImageView graphic = new ImageView(ValidationIcons.getValidationResultIcon(event.getEventType()));
+                    ImageView graphic = new ImageView(ValidationIcons.getInstance().getValidationResultIcon(event.getEventType()));
                     if (resultDecorator != null && exists(targetNode, resultDecorator)) {
                         label = (Label) resultDecorator.getNode();
                         label.setGraphic(graphic);

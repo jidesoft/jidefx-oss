@@ -511,17 +511,17 @@ public class ValidationUtils {
                     else {
                         label = new Label("", graphic);
                         TooltipEx.install(label, tooltip);
+                        resultDecorator = createDefaultDecorator(targetNode, label);
                         label.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent event) {
-                                DecorationUtils.uninstall(targetNode);
+                                DecorationUtils.uninstall(targetNode, resultDecorator);
                                 resultDecorator = null;
                                 targetNode.getProperties().remove(PROPERTY_VALIDATION_RESULT);
                                 targetNode.getParent().requestLayout();
                                 event.consume();
                             }
                         });
-                        resultDecorator = createDefaultDecorator(targetNode, label);
                         DecorationUtils.install(targetNode, resultDecorator);
                         targetNode.getParent().requestLayout();
                     }

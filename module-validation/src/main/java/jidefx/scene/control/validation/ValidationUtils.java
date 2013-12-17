@@ -48,6 +48,7 @@ public class ValidationUtils {
     private static final String PROPERTY_ON_FOCUS_LOST_OBJECT = "Validation.On.FocusLost.Object"; //NON-NLS
 
     private static final String PROPERTY_VALIDATION_RESULT = "Validation.Result";
+    private static final String PROPERTY_VALIDATION_RESULT_MESSAGE = "Validation.Result.Message";
 
     private static final String PSEUDO_CLASS_VALIDATION_ERROR = "validation-error"; //NON-NLS
     private static final String PSEUDO_CLASS_VALIDATION_WARNING = "validation-warning"; //NON-NLS
@@ -488,8 +489,11 @@ public class ValidationUtils {
                         return;
                     }
 
+                    // check to make sure it is the same event type and even message
                     Object validationResultProperty = targetNode.getProperties().get(PROPERTY_VALIDATION_RESULT);
-                    if (validationResultProperty != null && validationResultProperty.equals(event.getEventType().getName())) {
+                    Object validationResultMessageProperty = targetNode.getProperties().get(PROPERTY_VALIDATION_RESULT_MESSAGE);
+                    if (validationResultProperty != null && validationResultProperty.equals(event.getEventType().getName())
+                            && validationResultMessageProperty != null && validationResultMessageProperty.equals(event.getMessage())) {
                         return;
                     }
 
@@ -518,6 +522,7 @@ public class ValidationUtils {
                                 DecorationUtils.uninstall(targetNode, resultDecorator);
                                 resultDecorator = null;
                                 targetNode.getProperties().remove(PROPERTY_VALIDATION_RESULT);
+                                targetNode.getProperties().remove(PROPERTY_VALIDATION_RESULT_MESSAGE);
                                 targetNode.getParent().requestLayout();
                                 event.consume();
                             }
@@ -525,7 +530,9 @@ public class ValidationUtils {
                         DecorationUtils.install(targetNode, resultDecorator);
                         targetNode.getParent().requestLayout();
                     }
+
                     targetNode.getProperties().put(PROPERTY_VALIDATION_RESULT, event.getEventType().getName());
+                    targetNode.getProperties().put(PROPERTY_VALIDATION_RESULT_MESSAGE, event.getMessage());
                 }
             }
 

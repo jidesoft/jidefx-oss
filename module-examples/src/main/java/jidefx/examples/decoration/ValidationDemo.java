@@ -25,6 +25,8 @@ import jidefx.scene.control.decoration.Decorator;
 import jidefx.scene.control.validation.*;
 import org.apache.commons.validator.routines.*;
 
+import java.time.LocalDate;
+
 public class ValidationDemo extends AbstractFxDemo {
 
     @Override
@@ -67,8 +69,7 @@ public class ValidationDemo extends AbstractFxDemo {
                 if (newValue) {
                     // use a validation css for demo purpose
                     tabPane.getStylesheets().add(ValidationDemo.class.getResource("Validation.css").toExternalForm());
-                }
-                else {
+                } else {
                     tabPane.getStylesheets().remove(ValidationDemo.class.getResource("Validation.css").toExternalForm());
                 }
             }
@@ -92,8 +93,7 @@ public class ValidationDemo extends AbstractFxDemo {
                 ValidationEvent event = super.call(param);
                 if (!ValidationEvent.VALIDATION_OK.equals(event.getEventType()) || emailField.getText().equals(confirmEmailField.getText())) {
                     return event;
-                }
-                else {
+                } else {
                     return new ValidationEvent(ValidationEvent.VALIDATION_ERROR, 0, "Two emails are not the same!");
                 }
             }
@@ -104,8 +104,7 @@ public class ValidationDemo extends AbstractFxDemo {
             public ValidationEvent call(ValidationObject param) {
                 if (emailField.getText().trim().length() == 0) {
                     return new ValidationEvent(ValidationEvent.VALIDATION_ERROR, 0, "The email cannot be empty!");
-                }
-                else return new SimpleValidator(EmailValidator.getInstance()).call(param);
+                } else return new SimpleValidator(EmailValidator.getInstance()).call(param);
             }
         }, ValidationMode.ON_DEMAND);
         ValidationUtils.install(confirmEmailField, emailValidator);
@@ -115,11 +114,9 @@ public class ValidationDemo extends AbstractFxDemo {
             public ValidationEvent call(ValidationObject param) {
                 if ("United States".equals(param.getNewValue())) {
                     return ValidationEvent.OK;
-                }
-                else if (param.getNewValue() == null) {
+                } else if (param.getNewValue() == null) {
                     return new ValidationEvent(ValidationEvent.VALIDATION_ERROR, 0, "Please select a country!");
-                }
-                else {
+                } else {
                     return new ValidationEvent(ValidationEvent.VALIDATION_WARNING, 0, "We only support signing up in United States at the moment!");
                 }
             }
@@ -135,8 +132,7 @@ public class ValidationDemo extends AbstractFxDemo {
             public ValidationEvent call(ValidationObject param) {
                 if (passwordField.getText().trim().length() == 0) {
                     return new ValidationEvent(ValidationEvent.VALIDATION_ERROR, 0, "The password cannot be empty!");
-                }
-                else return ValidationEvent.OK;
+                } else return ValidationEvent.OK;
             }
         };
         ValidationUtils.install(passwordField, passwordEmptyValidator, ValidationMode.ON_DEMAND);
@@ -147,8 +143,7 @@ public class ValidationDemo extends AbstractFxDemo {
             public ValidationEvent call(ValidationObject param) {
                 if (!passwordField.getText().equals(confirmPasswordField.getText())) {
                     return new ValidationEvent(ValidationEvent.VALIDATION_ERROR, 0, "The two password are different!");
-                }
-                else return ValidationEvent.OK;
+                } else return ValidationEvent.OK;
             }
         }, ValidationMode.ON_FOCUS_LOST);
 
@@ -217,23 +212,32 @@ public class ValidationDemo extends AbstractFxDemo {
                 if (event.getEventType() == ValidationEvent.VALIDATION_OK) {
                     if (new CreditCardValidator(CreditCardValidator.VISA).isValid(cardField.getText())) {
                         cardImage.setImage(new Image("/jidefx/examples/decoration/VISA.png"));
-                    }
-                    else if (new CreditCardValidator(CreditCardValidator.MASTERCARD).isValid(cardField.getText())) {
+                    } else if (new CreditCardValidator(CreditCardValidator.MASTERCARD).isValid(cardField.getText())) {
                         cardImage.setImage(new Image("/jidefx/examples/decoration/MasterCard.png"));
-                    }
-                    else if (new CreditCardValidator(CreditCardValidator.AMEX).isValid(cardField.getText())) {
+                    } else if (new CreditCardValidator(CreditCardValidator.AMEX).isValid(cardField.getText())) {
                         cardImage.setImage(new Image("/jidefx/examples/decoration/AMEX.png"));
-                    }
-                    else if (new CreditCardValidator(CreditCardValidator.DISCOVER).isValid(cardField.getText())) {
+                    } else if (new CreditCardValidator(CreditCardValidator.DISCOVER).isValid(cardField.getText())) {
                         cardImage.setImage(new Image("/jidefx/examples/decoration/Discover.png"));
-                    }
-                    else if (new CreditCardValidator(CreditCardValidator.DINERS).isValid(cardField.getText())) {
+                    } else if (new CreditCardValidator(CreditCardValidator.DINERS).isValid(cardField.getText())) {
                         cardImage.setImage(new Image("/jidefx/examples/decoration/DinersClub.png"));
                     }
                 }
 
             }
         });
+
+        DatePicker dpDate = (DatePicker) pane.lookup("#" + prefix + "dpDate");
+
+        Validator validator = new Validator() {
+            @Override
+            public ValidationEvent call(ValidationObject param) {
+                LocalDate date = LocalDate.of(2014, 8, 20);
+                return dpDate.getValue().isBefore(date) ? new ValidationEvent(ValidationEvent.VALIDATION_OK) :
+                        new ValidationEvent(ValidationEvent.VALIDATION_ERROR, 0, "NOT OK");
+            }
+        };
+
+        ValidationUtils.install(dpDate, validator, ValidationMode.ON_FOCUS_LOST);
 
         return new DecorationPane(pane);
     }

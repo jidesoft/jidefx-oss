@@ -1350,6 +1350,13 @@ public class DemoData {
         cardImage.setId(PREFIX_VALIDATION_FORM + "cardImage");
         pane.add(cardImage, new CC().wrap());
 
+        Label dpLabel = new Label("Date Picker: ");
+        dpLabel.setId(PREFIX_VALIDATION_FORM + "dpLabel");
+        DatePicker dpDate = new DatePicker();
+        dpDate.setId(PREFIX_VALIDATION_FORM + "dpDate");
+        pane.add(dpLabel);
+        pane.add(dpDate, new CC().wrap());
+
         return pane;
     }
 

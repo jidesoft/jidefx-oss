@@ -205,6 +205,9 @@ public class ValidationUtils {
         else if (RadioButton.class.isAssignableFrom(clazz)) {
             return ((RadioButton) targetNode).selectedProperty();
         }
+        else if (DatePicker.class.isAssignableFrom(clazz)) {
+            return ((DatePicker) targetNode).valueProperty();
+        }
         return observableValue;
     }
 

@@ -90,7 +90,7 @@ abstract public class AbstractFxDemo extends Application implements FxDemo {
 
         Scene scene = new Scene(createDemo(this));
 
-        ScenicViewBooter.show(scene);
+        //ScenicViewBooter.show(scene);
 
         stage.setTitle(getName() + " - JIDE "/* + " on JDK " + SystemInfo.getJavaVersion()*/);
         stage.setScene(scene);

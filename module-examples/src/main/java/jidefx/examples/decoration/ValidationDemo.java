@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -26,6 +27,12 @@ import jidefx.scene.control.validation.*;
 import org.apache.commons.validator.routines.*;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class ValidationDemo extends AbstractFxDemo {
 
@@ -227,17 +234,54 @@ public class ValidationDemo extends AbstractFxDemo {
         });
 
         DatePicker dpDate = (DatePicker) pane.lookup("#" + prefix + "dpDate");
+        DatePicker dpDateTwo = (DatePicker) pane.lookup("#" + prefix + "dpDateTwo");
 
         Validator validator = new Validator() {
             @Override
             public ValidationEvent call(ValidationObject param) {
-                LocalDate date = LocalDate.of(2014, 8, 20);
-                return dpDate.getValue().isBefore(date) ? new ValidationEvent(ValidationEvent.VALIDATION_OK) :
-                        new ValidationEvent(ValidationEvent.VALIDATION_ERROR, 0, "NOT OK");
+                return dpDate.getValue() != null && dpDateTwo.getValue() != null &&
+                        dpDate.getValue().isBefore(dpDateTwo.getValue()) &&
+                        dpDateTwo.getValue().isAfter(dpDate.getValue())
+                        ?
+                        new ValidationEvent(ValidationEvent.VALIDATION_OK) :
+                        new ValidationEvent(ValidationEvent.VALIDATION_ERROR, 0, "Date is not ok");
             }
         };
 
-        ValidationUtils.install(dpDate, validator, ValidationMode.ON_FOCUS_LOST);
+        ValidationUtils.install(dpDate, validator, ValidationMode.ON_FLY);
+        ValidationUtils.install(dpDateTwo, validator, ValidationMode.ON_FLY);
+
+        Consumer<DatePicker> validateDates = (num) -> {
+            ValidationUtils.forceValidate(dpDate, ValidationMode.ON_FLY);
+            ValidationUtils.forceValidate(dpDateTwo, ValidationMode.ON_FLY);
+        };
+
+        dpDate.valueProperty().addListener((observable1, oldValue1, newValue1) -> {
+            validateDates.accept(null);
+        });
+
+
+        dpDateTwo.valueProperty().addListener((observable1, oldValue1, newValue1) -> {
+            validateDates.accept(null);
+        });
+
+        validateDates.accept(null);
+
+        Label label = null;
+        Optional<List<Decorator>> ovalidationDecorators = ValidationUtils.getValidationDecorators(dpDate);
+        if (ovalidationDecorators.isPresent()) {
+            Optional<Node> nodeOptional = Optional.of(ovalidationDecorators.get().get(0).getNode());
+            if (nodeOptional.isPresent() && (nodeOptional.get() instanceof Label)) {
+                label = (Label) nodeOptional.get();
+            }
+        }
+
+        final Label finalLabel = label;
+        dpDate.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                ValidationUtils.showTooltip(finalLabel);
+            }
+        });
 
         return new DecorationPane(pane);
     }

@@ -16,6 +16,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -1354,8 +1355,23 @@ public class DemoData {
         dpLabel.setId(PREFIX_VALIDATION_FORM + "dpLabel");
         DatePicker dpDate = new DatePicker();
         dpDate.setId(PREFIX_VALIDATION_FORM + "dpDate");
+        AnchorPane anchorPane = new AnchorPane(dpDate);
+        anchorPane.setLeftAnchor(dpDate, 0.0);
+        anchorPane.setRightAnchor(dpDate, 0.0);
+
         pane.add(dpLabel);
-        pane.add(dpDate, new CC().wrap());
+        pane.add(anchorPane, new CC().wrap());
+
+        Label dpLabelTwo = new Label("Date Picker: ");
+        dpLabelTwo.setId(PREFIX_VALIDATION_FORM + "dpLabelTwo");
+        DatePicker dpDateTwo = new DatePicker();
+        dpDateTwo.setId(PREFIX_VALIDATION_FORM + "dpDateTwo");
+        AnchorPane anchorPaneTwo = new AnchorPane(dpDateTwo);
+        anchorPaneTwo.setLeftAnchor(dpDateTwo, 0.0);
+        anchorPaneTwo.setRightAnchor(dpDateTwo, 0.0);
+
+        pane.add(dpLabelTwo);
+        pane.add(anchorPaneTwo, new CC().wrap());
 
         return pane;
     }

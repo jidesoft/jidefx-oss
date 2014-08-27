@@ -5,7 +5,7 @@
         validation-ok
 */
 .text-field:validation-error {
-    -fx-background-color: #ff000077, -fx-text-box-border, -fx-control-inner-background;
+    -fx-background-color: #ff000080, -fx-text-box-border, -fx-control-inner-background;
 }
 
 /* You can combine validation related pseudo-classes with other pseudo-class */
@@ -15,7 +15,27 @@
 }
 
 .choice-box:validation-error {
-    -fx-background-color: -fx-shadow-highlight-color, #ff00ff77, -fx-inner-border, -fx-body-color;
+    -fx-background-color: -fx-shadow-highlight-color, #ff000080, -fx-inner-border, -fx-body-color;
+}
+
+.date-picker:validation-error {
+    -fx-background-color: #ff000080;
+    -fx-background-insets: 0;
+}
+
+.date-picker:validation-error:focused {
+    -fx-background-color: #ff0000ff;
+    -fx-background-insets: -0.4, 1, 2;
+}
+
+.date-picker:validation-ok {
+    -fx-background-color: #00660090;
+    -fx-background-insets: 0;
+}
+
+.date-picker:validation-ok:focused {
+    -fx-background-color: #00660090;
+    -fx-background-insets: -0.4, 1, 2;
 }
 
 /* you can also use wildcard with pseudo class to change the style for all the nodes with certain validation result */
@@ -27,3 +47,32 @@
     -fx-text-fill: #00aa00ff;
 }
 
+.label-validation:validation-error .tooltip {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+    -fx-font-weight: bold;
+    -fx-padding: 5;
+    -fx-border-width:1;
+    -fx-background-color: #FBEFEF;
+    -fx-text-fill: #cc0033;
+    -fx-border-color:#cc0033;
+}
+
+.label-validation:validation-warning .tooltip {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+    -fx-font-weight: bold;
+    -fx-padding: 5;
+    -fx-border-width:1;
+    -fx-background-color: #FFFFCC;
+    -fx-text-fill: #CC9900;
+    -fx-border-color: #CC9900;
+}
+
+.label-validation:validation-ok .tooltip {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+    -fx-font-weight: bold;
+    -fx-padding: 5;
+    -fx-border-width:1;
+    -fx-background-color: #b4ffb3;
+    -fx-text-fill: #33cc31;
+    -fx-border-color: #33cc31;
+}

@@ -1220,7 +1220,7 @@ public class DemoData {
 
         Button signUpButton = new Button("Sign Up");
         signUpButton.setId(PREFIX_SIGNUP_FORM + "signUpButton");
-        signUpButton.disableProperty().bind(agreeCheckBox.selectedProperty().not());
+        //signUpButton.disableProperty().bind(agreeCheckBox.selectedProperty().not());
 
         pane.add(emailLabel);
         pane.add(emailField, new CC().width("250px").wrap());

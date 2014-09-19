@@ -26,13 +26,9 @@ import jidefx.scene.control.decoration.Decorator;
 import jidefx.scene.control.validation.*;
 import org.apache.commons.validator.routines.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class ValidationDemo extends AbstractFxDemo {
 
@@ -57,7 +53,6 @@ public class ValidationDemo extends AbstractFxDemo {
 
     @Override
     public Region getDemoPanel() {
-
         TabPane tabPane = new TabPane();
         tabPane.getStyleClass().add(TabPane.STYLE_CLASS_FLOATING);
 
@@ -162,6 +157,16 @@ public class ValidationDemo extends AbstractFxDemo {
             }
         });
 
+        ValidationGroup validationGroup = new ValidationGroup(emailField, passwordField);
+        signUpButton.disableProperty().bind(validationGroup.invalidProperty());
+
+        validationGroup.invalidProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println(newValue);
+        });
+
+        ValidationUtils.forceValidate(emailField, ValidationMode.ON_FLY);
+        ValidationUtils.forceValidate(passwordField, ValidationMode.ON_FLY);
+
         // add a large help icon to the sign-up button
         Label helpLabel = new Label("", new ImageView(new Image("/jidefx/examples/decoration/help.png")));
         DecorationUtils.install(signUpButton, new Decorator<>(helpLabel, Pos.CENTER_RIGHT, new Point2D(100, 0)));
@@ -233,54 +238,54 @@ public class ValidationDemo extends AbstractFxDemo {
             }
         });
 
-        DatePicker dpDate = (DatePicker) pane.lookup("#" + prefix + "dpDate");
-        DatePicker dpDateTwo = (DatePicker) pane.lookup("#" + prefix + "dpDateTwo");
+        final DatePicker dpDate = (DatePicker) pane.lookup("#" + prefix + "dpDate");
+        final DatePicker dpDateTwo = (DatePicker) pane.lookup("#" + prefix + "dpDateTwo");
 
-        Validator validator = new Validator() {
-            @Override
-            public ValidationEvent call(ValidationObject param) {
-                return dpDate.getValue() != null && dpDateTwo.getValue() != null &&
-                        dpDate.getValue().isBefore(dpDateTwo.getValue()) &&
-                        dpDateTwo.getValue().isAfter(dpDate.getValue())
-                        ?
-                        new ValidationEvent(ValidationEvent.VALIDATION_OK) :
-                        new ValidationEvent(ValidationEvent.VALIDATION_ERROR, 0, "Date is not ok");
-            }
-        };
+        Validator validator = param -> dpDate.getValue() != null && dpDateTwo.getValue() != null &&
+                dpDate.getValue().isBefore(dpDateTwo.getValue()) &&
+                dpDateTwo.getValue().isAfter(dpDate.getValue())
+                ?
+                new ValidationEvent(ValidationEvent.VALIDATION_OK) :
+                new ValidationEvent(ValidationEvent.VALIDATION_ERROR, 0, "Date is not ok");
 
         ValidationUtils.install(dpDate, validator, ValidationMode.ON_FLY);
-        ValidationUtils.install(dpDateTwo, validator, ValidationMode.ON_FLY);
+        ValidationUtils.install(dpDateTwo, dpDate.valueProperty(), validator, ValidationMode.ON_FLY,
+                ValidationUtils.createDefaultValidationEventHandler(dpDateTwo, ValidationDecorators::fontAwesomeDecoratorCreator));
 
-        Consumer<DatePicker> validateDates = (num) -> {
+        Consumer<Object> validateDates = o -> {
             ValidationUtils.forceValidate(dpDate, ValidationMode.ON_FLY);
             ValidationUtils.forceValidate(dpDateTwo, ValidationMode.ON_FLY);
         };
 
-        dpDate.valueProperty().addListener((observable1, oldValue1, newValue1) -> {
-            validateDates.accept(null);
-        });
-
-
-        dpDateTwo.valueProperty().addListener((observable1, oldValue1, newValue1) -> {
-            validateDates.accept(null);
-        });
+        ValidationDecorators.installRequiredDecorator(dpDate, ValidationDecorators::graphicRequiredCreator);
+        dpDate.valueProperty().addListener((observable1, oldValue1, newValue1) -> validateDates.accept(null));
+        dpDateTwo.valueProperty().addListener((observable1, oldValue1, newValue1) -> validateDates.accept(null));
 
         validateDates.accept(null);
 
-        Label label = null;
+        Label validationLabel = null;
         Optional<List<Decorator>> ovalidationDecorators = ValidationUtils.getValidationDecorators(dpDate);
         if (ovalidationDecorators.isPresent()) {
             Optional<Node> nodeOptional = Optional.of(ovalidationDecorators.get().get(0).getNode());
             if (nodeOptional.isPresent() && (nodeOptional.get() instanceof Label)) {
-                label = (Label) nodeOptional.get();
+                validationLabel = (Label) nodeOptional.get();
             }
         }
 
-        final Label finalLabel = label;
+        final Label finalValidationLabel = validationLabel;
+        // Show Validation tooltip on date picker focus
         dpDate.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                ValidationUtils.showTooltip(finalLabel);
+                ValidationUtils.showTooltip(finalValidationLabel);
             }
+        });
+
+        dpDate.addEventHandler(ValidationEvent.VALIDATION_ERROR, event -> {
+            ValidationUtils.showTooltip(finalValidationLabel);
+        });
+
+        pane.addEventHandler(ValidationEvent.ANY, event -> {
+            System.out.println(event);
         });
 
         return new DecorationPane(pane);

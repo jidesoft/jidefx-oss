@@ -4,6 +4,7 @@
         validation-info
         validation-ok
 */
+
 .text-field:validation-error {
     -fx-background-color: #ff000080, -fx-text-box-border, -fx-control-inner-background;
 }
@@ -47,17 +48,32 @@
     -fx-text-fill: #00aa00ff;
 }
 
-.label-validation:validation-error .tooltip {
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+.required-validation-decorator {
+    -fx-text-fill: #cc0033;
+    -fx-font-size: 20px !important;
+}
+
+.validation-decorator:validation-ok {
+    -fx-text-fill: #33cc31;
+}
+
+.validation-decorator:validation-error {
+    -fx-text-fill: #cc0033;
+}
+
+.validation-decorator:validation-error .tooltip {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 0);
     -fx-font-weight: bold;
     -fx-padding: 5;
     -fx-border-width:1;
     -fx-background-color: #FBEFEF;
     -fx-text-fill: #cc0033;
     -fx-border-color:#cc0033;
+    -fx-border-radius: 0px;
+    -fx-opacity: 0.9;
 }
 
-.label-validation:validation-warning .tooltip {
+.validation-decorator:validation-warning .tooltip {
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
     -fx-font-weight: bold;
     -fx-padding: 5;
@@ -67,7 +83,7 @@
     -fx-border-color: #CC9900;
 }
 
-.label-validation:validation-ok .tooltip {
+.validation-decorator:validation-ok .tooltip {
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
     -fx-font-weight: bold;
     -fx-padding: 5;

@@ -6,28 +6,23 @@
 
 package jidefx.scene.control.validation;
 
+import com.jidefx.utils.function.TriFunction;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableMap;
 import javafx.css.PseudoClass;
 import javafx.css.Styleable;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
-import jidefx.animation.AnimationType;
 import jidefx.scene.control.decoration.DecorationUtils;
 import jidefx.scene.control.decoration.Decorator;
 import jidefx.utils.CommonUtils;
 import jidefx.utils.FXUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,12 +66,10 @@ public class ValidationUtils {
     private static final String PROPERTY_VALIDATION_RESULT = "Validation.Result";
     private static final String PROPERTY_VALIDATION_RESULT_MESSAGE = "Validation.Result.Message";
 
-    private static final String PROPERTY_LABEL_VALIDATION = "label-validation"; //NON-NLS
-
-    private static final String PSEUDO_CLASS_VALIDATION_ERROR = "validation-error"; //NON-NLS
-    private static final String PSEUDO_CLASS_VALIDATION_WARNING = "validation-warning"; //NON-NLS
-    private static final String PSEUDO_CLASS_VALIDATION_INFO = "validation-info"; //NON-NLS
-    private static final String PSEUDO_CLASS_VALIDATION_OK = "validation-ok"; //NON-NLS
+    public static final String PSEUDO_CLASS_VALIDATION_ERROR = "validation-error"; //NON-NLS
+    public static final String PSEUDO_CLASS_VALIDATION_WARNING = "validation-warning"; //NON-NLS
+    public static final String PSEUDO_CLASS_VALIDATION_INFO = "validation-info"; //NON-NLS
+    public static final String PSEUDO_CLASS_VALIDATION_OK = "validation-ok"; //NON-NLS
 
     /**
      * Installs a validator to a target node using the ON_FLY validation mode. If there is an old validator, it will be
@@ -92,7 +85,7 @@ public class ValidationUtils {
      * the observable value and the validator are not null.
      */
     public static <T> boolean install(Node targetNode, Validator validator) {
-        return install(targetNode, getDefaultObservableValue(targetNode), validator, getDefaultMode(), createDefaultValidationEventHandler(targetNode));
+        return install(targetNode, getDefaultObservableValue(targetNode), validator, getDefaultMode(), createDefaultValidationEventHandler(targetNode, ValidationDecorators::graphicDecoratorCreator));
     }
 
     /**
@@ -110,7 +103,7 @@ public class ValidationUtils {
      * the observable value and the validator are not null.
      */
     public static <T> boolean install(Node targetNode, Validator validator, ValidationMode mode) {
-        return install(targetNode, getDefaultObservableValue(targetNode), validator, mode, createDefaultValidationEventHandler(targetNode));
+        return install(targetNode, getDefaultObservableValue(targetNode), validator, mode, createDefaultValidationEventHandler(targetNode, ValidationDecorators::graphicDecoratorCreator));
     }
 
     /**
@@ -126,7 +119,7 @@ public class ValidationUtils {
      * the observable value and the validator are not null.
      */
     public static <T> boolean install(Node targetNode, ObservableValue<T> observableValue, Validator validator) {
-        return install(targetNode, observableValue, validator, ValidationMode.ON_FLY, createDefaultValidationEventHandler(targetNode));
+        return install(targetNode, observableValue, validator, ValidationMode.ON_FLY, createDefaultValidationEventHandler(targetNode, ValidationDecorators::graphicDecoratorCreator));
     }
 
     /**
@@ -143,7 +136,7 @@ public class ValidationUtils {
      * the observable value and the validator are not null.
      */
     public static <T> boolean install(Node targetNode, ObservableValue<T> observableValue, Validator validator, ValidationMode mode) {
-        return install(targetNode, observableValue, validator, mode, createDefaultValidationEventHandler(targetNode));
+        return install(targetNode, observableValue, validator, mode, createDefaultValidationEventHandler(targetNode, ValidationDecorators::graphicDecoratorCreator));
     }
 
     /**
@@ -192,6 +185,10 @@ public class ValidationUtils {
                 return setOnFlyValidation(targetNode, validator, observableValue, eventFilter);
         }
         return false;
+    }
+
+    public static <T> boolean install(Node targetNode, ObservableValue<T> observableValue, Validator validator, ValidationMode mode, TriFunction<Node, Decorator, ValidationEvent, Decorator<Label>> decorationCreator) {
+        return install(targetNode, observableValue, validator, mode, createDefaultValidationEventHandler(targetNode, decorationCreator));
     }
 
     // TODO: what if the targetNode is a TableView, ListView or a TreeView. Can the validator work as well when the validation is for an editing cell??
@@ -271,9 +268,9 @@ public class ValidationUtils {
         targetNode.addEventFilter(ValidationEvent.ANY, eventFilter);
 
         targetNode.getProperties().put(PROPERTY_ON_FOCUS_LOST_VALIDATOR, validator);
-        targetNode.getProperties().put(PROPERTY_ON_FOCUS_LOST_LISTENER, listener);
         targetNode.getProperties().put(PROPERTY_ON_FOCUS_LOST_EVENT_FILTER, eventFilter);
         targetNode.getProperties().put(PROPERTY_ON_FOCUS_LOST_LISTENER, listener);
+        targetNode.getProperties().put(PROPERTY_ON_FOCUS_LOST_OBJECT, targetProperty.getValue());
 
         return true;
     }
@@ -470,7 +467,7 @@ public class ValidationUtils {
                 // Search for validation label
                 long count = validationLabel.getStyleClass()
                         .stream()
-                        .filter(styleClass -> styleClass.equals(PROPERTY_LABEL_VALIDATION)).count();
+                        .filter(styleClass -> styleClass.equals(ValidationDecorators.PROPERTY_VALIDATION_DECORATOR)).count();
                 if (count > 0) {
                     return true;
                 }
@@ -508,18 +505,6 @@ public class ValidationUtils {
         return Optional.empty();
     }
 
-    private static TooltipFix createTooltip(ValidationEvent event, Label label) {
-        TooltipFix tooltip = null;
-
-        if (event.getMessage() != null && event.getMessage().trim().length() > 0) {
-            tooltip = new TooltipFix(label);
-            tooltip.setText(event.getMessage());
-            tooltip.setAutoHide(true);
-        }
-
-        return tooltip;
-    }
-
     public static void showTooltip(Label label) {
         if (label != null && label.getTooltip() != null) {
             Point2D point = label.localToScene(15.0, 15.0);
@@ -539,7 +524,7 @@ public class ValidationUtils {
      * @param targetNode the node to be validated
      * @return the event handler
      */
-    public static EventHandler<ValidationEvent> createDefaultValidationEventHandler(Node targetNode) {
+    public static EventHandler<ValidationEvent> createDefaultValidationEventHandler(Node targetNode, TriFunction<Node, Decorator, ValidationEvent, Decorator<Label>> decorationCreator) {
         return new EventHandler<ValidationEvent>() {
             Decorator resultDecorator = null;
 
@@ -567,85 +552,69 @@ public class ValidationUtils {
                         return;
                     }
 
-                    Label label;
-
-                    ImageView graphic = new ImageView(ValidationIcons.getInstance().getValidationResultIcon(event.getEventType()));
-                    if (resultDecorator != null && exists(targetNode, resultDecorator)) {
-                        label = (Label) resultDecorator.getNode();
-                        label.setGraphic(graphic);
-                        DecorationUtils.setAnimationPlayed(label, false);
-                        label.setTooltip(createTooltip(event, label));
-                    } else {
-                        label = new Label("", graphic);
-                        label.getStyleClass().add(PROPERTY_LABEL_VALIDATION);
-                        label.setTooltip(createTooltip(event, label));
-                        label.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
-                            if (label.getTooltip() != null) {
-                                label.getTooltip().show(label, 100, 100);
-                            }
-                        });
-                        resultDecorator = createDefaultDecorator(targetNode, label);
-                        DecorationUtils.install(targetNode, resultDecorator);
-                        targetNode.getParent().requestLayout();
-                    }
-
-                    adjustValidationPseudoClasses(event, label);
+                    // Create decorator using passed function (look into ValidationDecorators)
+                    resultDecorator = decorationCreator.apply(targetNode, resultDecorator, event);
+                    adjustValidationPseudoClasses(event, resultDecorator.getNode());
 
                     targetNode.getProperties().put(PROPERTY_VALIDATION_RESULT, event.getEventType().getName());
                     targetNode.getProperties().put(PROPERTY_VALIDATION_RESULT_MESSAGE, event.getMessage());
                 }
             }
-
-            private boolean exists(Node targetNode, Decorator resultDecorator) {
-                Object o = DecorationUtils.getDecorators(targetNode);
-                if (o != null) {
-                    if (o.equals(resultDecorator) || (o instanceof Decorator[] && Arrays.asList((Decorator[]) o).contains(resultDecorator))) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            private void adjustValidationPseudoClasses(ValidationEvent event, Node targetNode) {
-
-                if (event.getEventType() == ValidationEvent.VALIDATION_OK) {
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_OK), true);
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_INFO), false);
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_WARNING), false);
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_ERROR), false);
-                } else if (event.getEventType() == ValidationEvent.VALIDATION_ERROR) {
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_OK), false);
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_INFO), false);
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_WARNING), false);
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_ERROR), true);
-                } else if (event.getEventType() == ValidationEvent.VALIDATION_WARNING) {
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_OK), false);
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_INFO), false);
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_WARNING), true);
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_ERROR), false);
-                } else if (event.getEventType() == ValidationEvent.VALIDATION_INFO) {
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_OK), false);
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_INFO), true);
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_WARNING), false);
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_ERROR), false);
-                } else { // UNKNOWN
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_OK), false);
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_INFO), false);
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_WARNING), false);
-                    targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_ERROR), false);
-                }
-
-            }
-
-            private Decorator<Label> createDefaultDecorator(Node node, Label label) {
-                if (node instanceof Cell) {
-                    return new Decorator<>(label, Pos.CENTER_RIGHT, new Point2D(-60, 0), new Insets(0, 100, 0, 0), AnimationType.TADA);
-                } else {
-                    //return new Decorator<>(label, Pos.BOTTOM_LEFT);
-                    return new Decorator<>(label, Pos.BOTTOM_LEFT, new Point2D(0, 0), new Insets(0, 0, 0, 0));
-                }
-            }
         };
     }
-}
+
+    private static void adjustValidationPseudoClasses(ValidationEvent event, Node targetNode) {
+
+        if (event.getEventType() == ValidationEvent.VALIDATION_OK) {
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_OK), true);
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_INFO), false);
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_WARNING), false);
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_ERROR), false);
+        } else if (event.getEventType() == ValidationEvent.VALIDATION_ERROR) {
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_OK), false);
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_INFO), false);
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_WARNING), false);
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_ERROR), true);
+        } else if (event.getEventType() == ValidationEvent.VALIDATION_WARNING) {
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_OK), false);
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_INFO), false);
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_WARNING), true);
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_ERROR), false);
+        } else if (event.getEventType() == ValidationEvent.VALIDATION_INFO) {
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_OK), false);
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_INFO), true);
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_WARNING), false);
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_ERROR), false);
+        } else { // UNKNOWN
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_OK), false);
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_INFO), false);
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_WARNING), false);
+            targetNode.pseudoClassStateChanged(PseudoClass.getPseudoClass(PSEUDO_CLASS_VALIDATION_ERROR), false);
+        }
+
+    }
+
+    public static ValidationStatus getValidationStatus(Node targetNode) {
+        ValidationStatus status = ValidationStatus.VALIDATION_UNKNOWN;
+
+        Object validationResult = targetNode.getProperties().get(PROPERTY_VALIDATION_RESULT);
+        if (validationResult != null) {
+            String validationResultName = validationResult.toString();
+
+            if (validationResultName.equals(ValidationEvent.VALIDATION_ERROR.getName())) {
+                status = ValidationStatus.VALIDATION_ERROR;
+            } else if (validationResultName.equals(ValidationEvent.VALIDATION_INFO.getName())) {
+                status = ValidationStatus.VALIDATION_INFO;
+            } else if (validationResultName.equals(ValidationEvent.VALIDATION_OK.getName())) {
+                status = ValidationStatus.VALIDATION_OK;
+            } else if (validationResultName.equals(ValidationEvent.VALIDATION_UNKNOWN.getName())) {
+                status = ValidationStatus.VALIDATION_UNKNOWN;
+            } else if (validationResultName.equals(ValidationEvent.VALIDATION_WARNING.getName())) {
+                status = ValidationStatus.VALIDATION_WARNING;
+            }
+        }
+
+        return status;
+    }
+ }
 

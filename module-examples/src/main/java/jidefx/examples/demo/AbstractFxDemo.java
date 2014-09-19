@@ -7,7 +7,7 @@
 package jidefx.examples.demo;
 
 //import com.aquafx_project.AquaFx;
-import com.sun.javafx.application.PlatformImpl;
+
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -23,8 +23,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import org.scenicview.ScenicView;
-import org.scenicview.utils.ScenicViewBooter;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -89,8 +87,6 @@ abstract public class AbstractFxDemo extends Application implements FxDemo {
         System.out.println("Setting locale to " + Locale.getDefault().toString());
 
         Scene scene = new Scene(createDemo(this));
-
-        //ScenicViewBooter.show(scene);
 
         stage.setTitle(getName() + " - JIDE "/* + " on JDK " + SystemInfo.getJavaVersion()*/);
         stage.setScene(scene);

@@ -177,7 +177,7 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
                 MouseEvent e = new MouseEvent(event.getSource(), event.getTarget(), MouseEvent.MOUSE_CLICKED,
                         event.getX(), event.getY(), event.getScreenX(), event.getScreenY(), MouseButton.PRIMARY, 1, false, false, false, false, true, false, false, true, false, true,
                         null);
-                HitInfo hitInfo = ((TextFieldSkin) getSkin()).getIndex(e);
+                HitInfo hitInfo = ((TextFieldSkin) getSkin()).getIndex(e.getX(), e.getY());
                 if (getCaretPosition() != hitInfo.getCharIndex()) {
                     ((TextFieldSkin) getSkin()).positionCaret(hitInfo, false);
                 }

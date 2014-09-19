@@ -99,14 +99,14 @@ task build (overwrite: true, type: Copy, dependsOn: [subprojects.assemble, initP
     }
     from(allModules) {
         include "dist/*-${VERSION}.jar"
-        exclude "dist/*javadoc.jar", "dist/*source.jar"
+        exclude "dist/*javadoc.jar", "dist/*sources.jar"
         into "lib"
         eachFile { f ->
             f.path = f.path.replaceAll(/(.*\/)dist\/(.*)/, '$1$2')
         }
     }
     from(allModules) {
-        include "dist/*-${VERSION}-source.jar"
+        include "dist/*-${VERSION}-sources.jar"
         into "src"
         eachFile { f ->
             f.path = f.path.replaceAll(/(.*\/)dist\/(.*)/, '$1$2')

@@ -1058,7 +1058,7 @@ public class TooltipEx extends PopupControl {
     }
 
     // Added in JideFX
-    private static Point2D adjustTooltipLocation(Node hoveredNode, TooltipEx tooltip) {
+    public static Point2D adjustTooltipLocation(Node hoveredNode, TooltipEx tooltip) {
         Pos pos = tooltip.getPos();
         Point2D nodeLocation = hoveredNode.localToScreen(0, 0);
         Point2D p = null;

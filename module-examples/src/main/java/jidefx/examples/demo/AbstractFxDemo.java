@@ -7,7 +7,7 @@
 package jidefx.examples.demo;
 
 //import com.aquafx_project.AquaFx;
-import com.sun.javafx.application.PlatformImpl;
+
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

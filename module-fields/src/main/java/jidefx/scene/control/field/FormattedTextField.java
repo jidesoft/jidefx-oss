@@ -177,7 +177,7 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
                 MouseEvent e = new MouseEvent(event.getSource(), event.getTarget(), MouseEvent.MOUSE_CLICKED,
                         event.getX(), event.getY(), event.getScreenX(), event.getScreenY(), MouseButton.PRIMARY, 1, false, false, false, false, true, false, false, true, false, true,
                         null);
-                HitInfo hitInfo = ((TextFieldSkin) getSkin()).getIndex(e.getX(), e.getY());
+                HitInfo hitInfo = ((TextFieldSkin) getSkin()).getIndex(e);
                 if (getCaretPosition() != hitInfo.getCharIndex()) {
                     ((TextFieldSkin) getSkin()).positionCaret(hitInfo, false);
                 }
@@ -671,6 +671,7 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
                 || (!event.isShortcutDown() && (event.getCode() == KeyCode.HOME || event.getCode() == KeyCode.END)))
             return false;
 
+        if(event.getEventType() == KeyEvent.KEY_PRESSED) {
         // find a group from the current caret position
         String name = getCurrentGroupName();
         if (name == null || name.trim().isEmpty()) {
@@ -692,7 +693,13 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
                     if (verifier instanceof PatternVerifier.Adjustable && verifier instanceof PatternVerifier.Formatter && verifier instanceof PatternVerifier.Parser) {
 
                         if (verifier instanceof PatternVerifier.Value) {
-                            ((PatternVerifier.Value) verifier).setFieldValue(fromString(getText()));
+                            try {
+                                ((PatternVerifier.Value) verifier).setFieldValue(fromString(getText()));
+                            }
+                            catch (Exception e) {
+                                // setFieldValue will not accept any null value so we will explain to user why it happens.
+                                e.printStackTrace();
+                            }
                         }
                         Object newValue = null;
                         Object value = ((PatternVerifier.Parser) verifier).parse(text);
@@ -746,6 +753,7 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
             catch (NumberFormatException e) {
                 CommonUtils.ignoreException(e);
             }
+        }
         }
         return false;
     }

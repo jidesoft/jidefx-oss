@@ -12,7 +12,7 @@ allprojects {
         jdk
     }
 
-    tasks.withType(Compile) {
+    tasks.withType(JavaCompile) {
         options.compilerArgs = ["-g:${DEBUG_LEVELS}"]
     }
 

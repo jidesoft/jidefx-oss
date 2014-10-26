@@ -45,14 +45,14 @@ import java.util.regex.Pattern;
 /**
  * {@code FormattedTextField} is a {@code TextField} that can restrict the user input by applying a pattern to separate
  * the input string into groups, then define PatternVerifiers to verify/restrict the input for each group.
- * <p/>
+ * <p>
  * Let's start by looking an example for an IPv4 address field.
  * <pre>{@code
  * FormattedTextField&lt;String&gt; field = new FormattedTextField&lt;&gt;();
  * field.setPattern("h.h.h.h");
  * field.getPatternVerifiers().put('h', new IntegerRangeGroupVerifier(0, 255));
  * }</pre>
- * <p/>
+ * <p>
  * The pattern is "h.h.h.h", it means there are four groups, separated by dots. It doesn?t really matter which letter or
  * letters you use here because it is just a name for the group. In this case, four groups have the same name "h". Then
  * in the PatternVerifiers map, we added a verifier for the group named "h". The verifier will enforce the input string
@@ -177,7 +177,9 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
                 MouseEvent e = new MouseEvent(event.getSource(), event.getTarget(), MouseEvent.MOUSE_CLICKED,
                         event.getX(), event.getY(), event.getScreenX(), event.getScreenY(), MouseButton.PRIMARY, 1, false, false, false, false, true, false, false, true, false, true,
                         null);
-                HitInfo hitInfo = ((TextFieldSkin) getSkin()).getIndex(e);
+                // Note: if you are using JDK8u40 or earlier, please use the first line below and comment out the second line
+                // HitInfo hitInfo = ((TextFieldSkin) getSkin()).getIndex(e);
+                HitInfo hitInfo = ((TextFieldSkin) getSkin()).getIndex(e.getX(), e.getY());
                 if (getCaretPosition() != hitInfo.getCharIndex()) {
                     ((TextFieldSkin) getSkin()).positionCaret(hitInfo, false);
                 }
@@ -210,12 +212,12 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
                             event.consume();
                         }
                     }
-                    else if (cancelEdit()) {
+                    else if (cancelEditing()) {
                         event.consume();
                     }
                 }
                 else if (event.getCode() == KeyCode.ESCAPE) {
-                    if (cancelEdit()) {
+                    if (cancelEditing()) {
                         event.consume();
                     }
                 }
@@ -258,7 +260,7 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
 
                 if (!newValue) {
                     if (!commitEdit()) {
-                        cancelEdit();
+                        cancelEditing();
                     }
                 }
             }
@@ -358,12 +360,14 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
 
     /**
      * Cancels the edit to reset the text using the previous value.
+     * <p>
+     * This method was named cancelEdit and had to be renamed to cancelEditing since JDK8u40 because it introduced a
+     * final cancelEdit() method in the TextInputControl.
      *
      * @return true if canceled. False if not canceled because the previous value is null or the current value is the
-     *         same as the previous cancel (or you can think it as the value was just canceled and now you cancel it
-     *         again).
+     * same as the previous cancel (or you can think it as the value was just canceled and now you cancel it again).
      */
-    public boolean cancelEdit() {
+    public boolean cancelEditing() {
         T value = getValue();
         if (value != null) {
             String groupName = getCurrentGroupName();
@@ -501,7 +505,7 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
      * For the grouped-based field, it will move the caret to the end of current group or the beginning of the next
      * group. This does not cause the selection to be cleared. Rather, the anchor stays put and the caretPosition is
      * moved.
-     * <p/>
+     * <p>
      * For position-based field, it will simply call super.
      */
     @Override
@@ -521,7 +525,7 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
      * For the grouped-based field, it will move the caret to the end of current group or the beginning of the next
      * group. This does not cause the selection to be cleared. Rather, the anchor stays put and the caretPosition is
      * moved. It is the same as {@link #selectNextWord()}.
-     * <p/>
+     * <p>
      * For position-based field, it will simply call super.
      */
     @Override
@@ -585,7 +589,7 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
 
     /**
      * Selects the next group. Commits the edit before selecting.
-     * <p/>
+     * <p>
      * Valid only for the group-based field.
      *
      * @return true if succeed, false if not selected.
@@ -609,7 +613,7 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
 
     /**
      * Selects the next group. Commits the edit before selecting.
-     * <p/>
+     * <p>
      * Valid only for the group-based field.
      *
      * @return true if succeed, false if not selected.
@@ -635,7 +639,7 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
         _internalAutoSelectAll = false;
         try {
             if (!commitEdit()) {
-                cancelEdit();
+                cancelEditing();
             }
         }
         finally {
@@ -662,7 +666,7 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
      *
      * @param event the KeyEvent.
      * @return true if the value is adjusted, otherwise false. If the text in the current group is not number, it will
-     *         return false.
+     * return false.
      */
     @SuppressWarnings("unchecked")
     public boolean processKeyCode(KeyEvent event) {
@@ -671,89 +675,89 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
                 || (!event.isShortcutDown() && (event.getCode() == KeyCode.HOME || event.getCode() == KeyCode.END)))
             return false;
 
-        if(event.getEventType() == KeyEvent.KEY_PRESSED) {
-        // find a group from the current caret position
-        String name = getCurrentGroupName();
-        if (name == null || name.trim().isEmpty()) {
-            int caretPosition = getCaretPosition();
-            int length = getText().length();
-            for (int i = 0; i < length; i++) {
-                int caret = (i + caretPosition) % length;
-                positionCaret(caret);
-                name = getCurrentGroupName();
-                if (name != null && !name.trim().isEmpty()) break;
+        if (event.getEventType() == KeyEvent.KEY_PRESSED) {
+            // find a group from the current caret position
+            String name = getCurrentGroupName();
+            if (name == null || name.trim().isEmpty()) {
+                int caretPosition = getCaretPosition();
+                int length = getText().length();
+                for (int i = 0; i < length; i++) {
+                    int caret = (i + caretPosition) % length;
+                    positionCaret(caret);
+                    name = getCurrentGroupName();
+                    if (name != null && !name.trim().isEmpty()) break;
+                }
             }
-        }
 
-        String text = getCurrentGroupText();
-        if (text != null) {
-            try {
-                Callback<String, Boolean> verifier = getPatternVerifiers().get(name);
-                if (verifier != null) {
-                    if (verifier instanceof PatternVerifier.Adjustable && verifier instanceof PatternVerifier.Formatter && verifier instanceof PatternVerifier.Parser) {
+            String text = getCurrentGroupText();
+            if (text != null) {
+                try {
+                    Callback<String, Boolean> verifier = getPatternVerifiers().get(name);
+                    if (verifier != null) {
+                        if (verifier instanceof PatternVerifier.Adjustable && verifier instanceof PatternVerifier.Formatter && verifier instanceof PatternVerifier.Parser) {
 
-                        if (verifier instanceof PatternVerifier.Value) {
-                            try {
-                                ((PatternVerifier.Value) verifier).setFieldValue(fromString(getText()));
-                            }
-                            catch (Exception e) {
-                                // setFieldValue will not accept any null value so we will explain to user why it happens.
-                                e.printStackTrace();
-                            }
-                        }
-                        Object newValue = null;
-                        Object value = ((PatternVerifier.Parser) verifier).parse(text);
-                        switch (event.getCode()) {
-                            case UP:
-                                newValue = ((PatternVerifier.Adjustable) verifier).getNextValue(value, !event.isShiftDown());
-                                break;
-                            case DOWN:
-                                newValue = ((PatternVerifier.Adjustable) verifier).getPreviousValue(value, !event.isShiftDown());
-                                break;
-                            case PAGE_UP:
-                                newValue = ((PatternVerifier.Adjustable) verifier).getNextPage(value, !event.isShiftDown());
-                                break;
-                            case PAGE_DOWN:
-                                newValue = ((PatternVerifier.Adjustable) verifier).getPreviousPage(value, !event.isShiftDown());
-                                break;
-                            case HOME:
-                                if (event.isShortcutDown()) {
-                                    newValue = ((PatternVerifier.Adjustable) verifier).getHome(value);
+                            if (verifier instanceof PatternVerifier.Value) {
+                                try {
+                                    ((PatternVerifier.Value) verifier).setFieldValue(fromString(getText()));
                                 }
-                                break;
-                            case END:
-                                if (event.isShortcutDown()) {
-                                    newValue = ((PatternVerifier.Adjustable) verifier).getEnd(value);
+                                catch (Exception e) {
+                                    // setFieldValue will not accept any null value so we will explain to user why it happens.
+                                    e.printStackTrace();
                                 }
-                                break;
-                        }
-                        if (verifier instanceof PatternVerifier.Value && newValue == null) {
-                            T newFieldValue = ((PatternVerifier.Value<T, ?>) verifier).getFieldValue();
-                            String newWholeText = toString(newFieldValue);
-                            if (newWholeText != null) {
-                                setValue(newFieldValue);
                             }
-                            IndexRange range = getGroupRangeAt(name);
-                            selectRange(range.getStart(), range.getEnd());
-                            return true;
-                        }
-                        else if (newValue != null) {
-                            String newText = ((PatternVerifier.Formatter) verifier).format(newValue);
-                            int groupStart = getGroupStart(getCaretPosition());
-                            if (verifier.call(newText)) {
-                                super.replaceText(groupStart, groupStart + text.length(), newText);
-                                commitWithoutSelectAll();
-                                selectRange(groupStart, groupStart + newText.length());
+                            Object newValue = null;
+                            Object value = ((PatternVerifier.Parser) verifier).parse(text);
+                            switch (event.getCode()) {
+                                case UP:
+                                    newValue = ((PatternVerifier.Adjustable) verifier).getNextValue(value, !event.isShiftDown());
+                                    break;
+                                case DOWN:
+                                    newValue = ((PatternVerifier.Adjustable) verifier).getPreviousValue(value, !event.isShiftDown());
+                                    break;
+                                case PAGE_UP:
+                                    newValue = ((PatternVerifier.Adjustable) verifier).getNextPage(value, !event.isShiftDown());
+                                    break;
+                                case PAGE_DOWN:
+                                    newValue = ((PatternVerifier.Adjustable) verifier).getPreviousPage(value, !event.isShiftDown());
+                                    break;
+                                case HOME:
+                                    if (event.isShortcutDown()) {
+                                        newValue = ((PatternVerifier.Adjustable) verifier).getHome(value);
+                                    }
+                                    break;
+                                case END:
+                                    if (event.isShortcutDown()) {
+                                        newValue = ((PatternVerifier.Adjustable) verifier).getEnd(value);
+                                    }
+                                    break;
                             }
-                            return true;
+                            if (verifier instanceof PatternVerifier.Value && newValue == null) {
+                                T newFieldValue = ((PatternVerifier.Value<T, ?>) verifier).getFieldValue();
+                                String newWholeText = toString(newFieldValue);
+                                if (newWholeText != null) {
+                                    setValue(newFieldValue);
+                                }
+                                IndexRange range = getGroupRangeAt(name);
+                                selectRange(range.getStart(), range.getEnd());
+                                return true;
+                            }
+                            else if (newValue != null) {
+                                String newText = ((PatternVerifier.Formatter) verifier).format(newValue);
+                                int groupStart = getGroupStart(getCaretPosition());
+                                if (verifier.call(newText)) {
+                                    super.replaceText(groupStart, groupStart + text.length(), newText);
+                                    commitWithoutSelectAll();
+                                    selectRange(groupStart, groupStart + newText.length());
+                                }
+                                return true;
+                            }
                         }
                     }
                 }
+                catch (NumberFormatException e) {
+                    CommonUtils.ignoreException(e);
+                }
             }
-            catch (NumberFormatException e) {
-                CommonUtils.ignoreException(e);
-            }
-        }
         }
         return false;
     }
@@ -866,7 +870,7 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
     /**
      * Sets the regular expression pattern. This regular expression pattern will be used to parse a string and separate
      * it into groups.
-     * <p/>
+     * <p>
      * In most cases, you don't need to call this method because we will automatically create the regular expression
      * using the pattern from the setPattern method. If the groups are separated by a non-group characters, we should
      * have no problem figuring out. Even if the groups are adjacent, we will check if the verifier implements {@link
@@ -1852,7 +1856,7 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
      * it will take a 10 times longer dragging distance in order to trigger the value adjustment (the same as threshold
      * x 10). Furthermore, if the field has multiple groups, A double-click will select the next group, A
      * shift-double-click will select the previous group.
-     * <p/>
+     * <p>
      * Because the singleton nature of this feature, we only support one adjustment node per field. Installing the mouse
      * handler for another node will remove the previous mouse handler.
      *
@@ -1871,7 +1875,7 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
      * it will take a 10 times longer dragging distance in order to trigger the value adjustment (the same as threshold
      * x 10). Furthermore, if the field has multiple groups, A double-click will select the next group, A
      * shift-double-click will select the previous group.
-     * <p/>
+     * <p>
      * Because the singleton nature of this feature, we only support one adjustment node per field. Installing the mouse
      * handler for another node will remove the previous mouse handler.
      *
@@ -1892,7 +1896,7 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
      * it will take a 10 times longer dragging distance in order to trigger the value adjustment (the same as threshold
      * x 10). Furthermore, if the field has multiple groups, A double-click will select the next group, A
      * shift-double-click will select the previous group.
-     * <p/>
+     * <p>
      * Because the singleton nature of this feature, we only support one adjustment node per field. Installing the mouse
      * handler for another node will remove the previous mouse handler.
      *

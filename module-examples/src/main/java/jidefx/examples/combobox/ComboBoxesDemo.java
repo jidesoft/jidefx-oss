@@ -13,10 +13,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.*;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBoxBase;
-import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -30,7 +27,6 @@ import jidefx.scene.control.decoration.DecorationPane;
 import jidefx.scene.control.decoration.DecorationUtils;
 import jidefx.scene.control.decoration.Decorator;
 import jidefx.scene.control.field.*;
-import jidefx.scene.control.popup.TooltipEx;
 import jidefx.utils.FXUtils;
 import net.miginfocom.layout.AC;
 import net.miginfocom.layout.CC;
@@ -455,9 +451,8 @@ public class ComboBoxesDemo extends AbstractFxDemo {
 
     private static void addDecoratorForFormattedComboBox(Label label, FormattedComboBox<?> field) {
         ImageView tip = new ImageView(new Image("/jidefx/examples/fields/formatted.png"));
-        TooltipEx tooltip = new TooltipEx("Pattern:" + field.getEditor().getPattern());
-        tooltip.setPos(Pos.BOTTOM_CENTER);
-        TooltipEx.install(tip, tooltip);
+        Tooltip tooltip = new Tooltip("Pattern:" + field.getEditor().getPattern());
+        Tooltip.install(tip, tooltip);
         DecorationUtils.install(label, new Decorator<Node>(tip, Pos.CENTER_RIGHT, new Point2D(80, 0)));
 
         field.getEditor().installAdjustmentMouseHandler(label, 1);
@@ -467,9 +462,8 @@ public class ComboBoxesDemo extends AbstractFxDemo {
         field.setPopupButtonVisible(true);
 
         ImageView tip = new ImageView(new Image("/jidefx/examples/fields/formatted.png"));
-        TooltipEx tooltip = new TooltipEx("Pattern:" + field.getPattern());
-        tooltip.setPos(Pos.BOTTOM_CENTER);
-        TooltipEx.install(tip, tooltip);
+        Tooltip tooltip = new Tooltip("Pattern:" + field.getPattern());
+        Tooltip.install(tip, tooltip);
         DecorationUtils.install(label, new Decorator<Node>(tip, Pos.CENTER_RIGHT, new Point2D(80, 0)));
 
         field.installAdjustmentMouseHandler(label, 1);

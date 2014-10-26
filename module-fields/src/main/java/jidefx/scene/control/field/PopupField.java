@@ -136,7 +136,7 @@ public class PopupField<T> extends FormattedTextField<T> {
         }
 
         if (!commitEdit()) {
-            cancelEdit();
+            cancelEditing();
         }
         PopupContent<T> popupContent = createPopupContent(getValue());
         if (popupContent != null) {

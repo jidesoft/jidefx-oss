@@ -17,6 +17,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -29,7 +30,7 @@ import jidefx.scene.control.decoration.DecorationPane;
 import jidefx.scene.control.decoration.DecorationUtils;
 import jidefx.scene.control.decoration.Decorator;
 import jidefx.scene.control.field.*;
-import jidefx.scene.control.popup.TooltipEx;
+import jidefx.scene.control.field.verifier.IntegerRangePatternVerifier;
 import jidefx.scene.control.validation.ValidationMode;
 import jidefx.scene.control.validation.ValidationUtils;
 import jidefx.utils.FXUtils;
@@ -170,6 +171,7 @@ public class TextFieldsDemo extends AbstractFxDemo {
         digitsLabel.setId(PREFIX_MASK_FIELD_FORM + "DigitsLabel");
         MaskTextField digitsField = new MaskTextField();
         digitsField.setInputMask("99999");
+        digitsField.setInputMask(null);
         digitsField.setPlaceholderCharacter('0');
         digitsField.setId(PREFIX_MASK_FIELD_FORM + "DigitsField");
         pane.add(digitsLabel);
@@ -371,6 +373,7 @@ public class TextFieldsDemo extends AbstractFxDemo {
         currencyFormat.setMaximumFractionDigits(2);
         currencyFormat.setMinimumFractionDigits(2);
         amountField.setDecimalFormat(currencyFormat);
+        amountField.setPositiveOnly(true);
         amountField.setValue(168.00);
         amountField.setId(PREFIX_MASK_FIELD_FORM + "AmountField");
         pane.add(amountLabel);
@@ -396,10 +399,14 @@ public class TextFieldsDemo extends AbstractFxDemo {
         Label IP4Label = new Label("IPv4:");
         IP4Label.setId(PREFIX_MASK_FIELD_FORM + "IP4Label");
         FormattedTextField<String> IP4Field = FormattedTextField.createIPv4Field();
-        IP4Field.setText("192.168.1.1");
-        IP4Field.setId(PREFIX_MASK_FIELD_FORM + "IP4Field");
+        FormattedTextField<String> field = new FormattedTextField<>();
+        field.getPatternVerifiers().put("a", new IntegerRangePatternVerifier(0, 999, true));
+        field.getPatternVerifiers().put("b", new IntegerRangePatternVerifier(0, 999, true));
+        field.getPatternVerifiers().put("c", new IntegerRangePatternVerifier(0, 9999, true));
+        field.setPattern("a-b-c");
+        field.setId(PREFIX_MASK_FIELD_FORM + "IP4Field");
         pane.add(IP4Label);
-        pane.add(IP4Field, new CC().wrap());
+        pane.add(field, new CC().wrap());
 
         addDecoratorForGroupBasedField(IP4Label, IP4Field);
 
@@ -464,13 +471,12 @@ public class TextFieldsDemo extends AbstractFxDemo {
         field.setClearButtonVisible(true);
 
         ImageView tip = new ImageView(new Image("/jidefx/examples/fields/mask.png"));
-        TooltipEx tooltip = new TooltipEx("InputMask: " + field.getInputMask()
+        Tooltip tooltip = new Tooltip("InputMask: " + field.getInputMask()
                 + "\n" + "ConversionMask: " + field.getConversionMask()
                 + "\n" + "RequiredMask: " + field.getRequiredMask()
                 + "\n" + "PlaceholderCharacter: " + field.getPlaceholderCharacter()
         );
-        tooltip.setPos(Pos.BOTTOM_CENTER);
-        TooltipEx.install(tip, tooltip);
+        Tooltip.install(tip, tooltip);
         DecorationUtils.install(label, new Decorator<Node>(tip, Pos.CENTER_RIGHT, new Point2D(80, 0), new Insets(0)));
     }
 
@@ -478,9 +484,8 @@ public class TextFieldsDemo extends AbstractFxDemo {
         field.setSpinnersVisible(true);
 
         ImageView tip = new ImageView(new Image("/jidefx/examples/fields/formatted.png"));
-        TooltipEx tooltip = new TooltipEx("Pattern: " + field.getPattern());
-        tooltip.setPos(Pos.BOTTOM_CENTER);
-        TooltipEx.install(tip, tooltip);
+        Tooltip tooltip = new Tooltip("Pattern: " + field.getPattern());
+        Tooltip.install(tip, tooltip);
         DecorationUtils.install(label, new Decorator<Node>(tip, Pos.CENTER_RIGHT, new Point2D(80, 0), new Insets(0)));
 
         field.installAdjustmentMouseHandler(label, 1);

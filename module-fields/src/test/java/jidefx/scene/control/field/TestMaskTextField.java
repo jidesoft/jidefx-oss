@@ -70,7 +70,7 @@ public class TestMaskTextField extends Application {
         field.setText("12//2013");
         field.commitEdit();
         TestCase.assertEquals("12//2013", field.getText());
-        field.cancelEdit();
+        field.cancelEditing();
         TestCase.assertEquals("12/03/2013", field.getText());
         field.processKeyCode(new KeyEvent(KeyEvent.KEY_PRESSED, "", "", KeyCode.UP, false, false, false, false));
         TestCase.assertEquals("01/03/2014", field.getText());

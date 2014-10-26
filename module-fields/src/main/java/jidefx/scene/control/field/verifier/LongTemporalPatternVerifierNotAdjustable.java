@@ -8,8 +8,8 @@ package jidefx.scene.control.field.verifier;
 
 import jidefx.utils.CommonUtils;
 
+import java.time.DateTimeException;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalField;
@@ -94,7 +94,7 @@ public class LongTemporalPatternVerifierNotAdjustable extends TemporalPatternVer
             long i = parse(text);
             if (i >= getMin() && i <= getMax()) return true;
         }
-        catch (DateTimeParseException e) {
+        catch (DateTimeException e) {
             CommonUtils.ignoreException(e);
         }
         return false;

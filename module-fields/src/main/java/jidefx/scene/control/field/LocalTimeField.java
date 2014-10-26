@@ -14,11 +14,9 @@ import jidefx.scene.control.field.verifier.PatternVerifierUtils;
 import jidefx.utils.CommonUtils;
 
 import java.text.SimpleDateFormat;
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
 
 /**
@@ -73,18 +71,8 @@ public class LocalTimeField extends PopupField<LocalTime> {
     protected LocalTime fromString(String text) {
         DateTimeFormatter dateTimeFormatter = getDateTimeFormatter();
         if (dateTimeFormatter != null) {
-            try {
-                TemporalAccessor parse = dateTimeFormatter.parse(text);
-                try {
-                    return LocalTime.from(parse);
-                }
-                catch (DateTimeException e) {
-                    CommonUtils.ignoreException(e);
-                }
-            }
-            catch (DateTimeParseException e) {
-                CommonUtils.ignoreException(e);
-            }
+            TemporalAccessor parse = dateTimeFormatter.parse(text);
+            return LocalTime.from(parse);
         }
         return super.fromString(text);
     }

@@ -27,10 +27,8 @@ import jidefx.utils.CommonUtils;
 import jidefx.utils.PredefinedShapes;
 
 import java.text.SimpleDateFormat;
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
 
 /**
@@ -102,18 +100,8 @@ public class LocalDateTimeField extends PopupField<LocalDateTime> {
     protected LocalDateTime fromString(String text) {
         DateTimeFormatter dateTimeFormatter = getDateTimeFormatter();
         if (dateTimeFormatter != null) {
-            try {
-                TemporalAccessor parse = dateTimeFormatter.parse(text);
-                try {
-                    return LocalDateTime.from(parse);
-                }
-                catch (DateTimeException e) {
-                    CommonUtils.ignoreException(e);
-                }
-            }
-            catch (DateTimeParseException e) {
-                CommonUtils.ignoreException(e);
-            }
+            TemporalAccessor parse = dateTimeFormatter.parse(text);
+            return LocalDateTime.from(parse);
         }
         return super.fromString(text);
     }

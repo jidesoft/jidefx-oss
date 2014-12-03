@@ -793,6 +793,9 @@ public class FormattedTextField<T> extends TextField implements DecorationSuppor
     private String getFixedText() {
         if (_fixedText == null) {
             _fixedText = getInitialTextFromMask();
+            if(_fixedText == null) {
+                _fixedText = "";
+            }
         }
         return _fixedText;
     }

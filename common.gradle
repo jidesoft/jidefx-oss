@@ -9,8 +9,24 @@ def FILE_JAVADOC_JAR = DIST_NAME + "${DIST_JAVADOC_SUFFIX}" + "${DIST_SUFFIX}"
 def PATH_SOURCE_TEMP = "build/src/source/" + MODULE_NAME
 def FILE_SOURCE_JAR = DIST_NAME + "${DIST_SOURCE_SUFFIX}" + "${DIST_SUFFIX}"
 
+File javaHome = new File(System.properties['java.home'])
+javaHome = javaHome.name == 'jre' ? javaHome.parentFile : javaHome
+ext.jfxrtLocation = new File("${javaHome}/jre/lib/jfxrt.jar").absolutePath
+// JavaFX locations for JDK7, JDK7, JDK8
+for (location in ['lib/jfxrt.jar', 'jre/lib/jfxrt.jar', 'jre/lib/ext/jfxrt.jar']) {
+    File file = new File(javaHome, location)
+    if (file.exists()) {
+        jfxrtLocation = file.absolutePath
+        break
+    }
+}
+
+if (!jfxrtLocation) {
+    throw new BuildException("Could not locate jfxrt.jar in $javaHome")
+}
+
 dependencies {
-    compile files("${JDK_HOME}/jre/lib/ext/jfxrt.jar")
+    compile files(jfxrtLocation)
     testCompile 'org.hamcrest:hamcrest-core:1.3'
     testCompile 'junit:junit-dep:4.11'
     testCompile 'junit:junit:4.11'

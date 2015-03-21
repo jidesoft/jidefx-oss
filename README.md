@@ -6,8 +6,7 @@ JideFX Common Layer at https://github.com/jidesoft/jidefx-oss.git<BR>
 
 We use gradle to build this project. All you need to do is:
 1. install the gradle
-2. modify the JDK_HOME in gradle.properties
-3. run "gradle" from the command line
+2. run "gradle" from the command line
 Each jar will be generated under the "dist" folder for binary, javadoc and source code respectively. 
 
 If you need a specific part, you just go to the specific sub-folder, then run "gradle". 

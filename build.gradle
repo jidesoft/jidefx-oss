@@ -1,6 +1,7 @@
 defaultTasks = ['build']
 
 allprojects {
+    apply plugin: 'idea'
     apply plugin: 'java'
     apply plugin: 'maven'
     apply plugin: 'signing'

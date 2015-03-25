@@ -22,7 +22,7 @@ for (location in ['lib/jfxrt.jar', 'jre/lib/jfxrt.jar', 'jre/lib/ext/jfxrt.jar']
 }
 
 if (!jfxrtLocation) {
-    throw new BuildException("Could not locate jfxrt.jar in $javaHome")
+    throw new GradleException("Could not locate jfxrt.jar in $javaHome")
 }
 
 dependencies {

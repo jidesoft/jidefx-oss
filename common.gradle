@@ -22,14 +22,14 @@ for (location in ['lib/jfxrt.jar', 'jre/lib/jfxrt.jar', 'jre/lib/ext/jfxrt.jar']
 }
 
 if (!jfxrtLocation) {
-    throw new BuildException("Could not locate jfxrt.jar in $javaHome")
+    throw new GradleException("Could not locate jfxrt.jar in $javaHome")
 }
 
 dependencies {
     compile files(jfxrtLocation)
     testCompile 'org.hamcrest:hamcrest-core:1.3'
     testCompile 'junit:junit-dep:4.11'
-    testCompile 'junit:junit:4.11'
+    testCompile 'junit:junit:4.12'
 }
 
 tasks.withType(Test) {

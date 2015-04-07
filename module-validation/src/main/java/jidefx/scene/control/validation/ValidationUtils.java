@@ -353,7 +353,7 @@ public class ValidationUtils {
                 if (eventFilter instanceof EventHandler) {
                     targetNode.removeEventFilter(ValidationEvent.ANY, (EventHandler<ValidationEvent>) eventFilter);
                 }
-
+                DecorationUtils.uninstall(targetNode);
                 Object remove = targetNode.getProperties().remove(PROPERTY_ON_FLY_VALIDATOR);
                 if (remove != null) {
                     targetNode.getProperties().remove(PROPERTY_ON_FLY_OBSERVABLE_VALUE);

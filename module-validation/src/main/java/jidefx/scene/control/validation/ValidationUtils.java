@@ -359,7 +359,8 @@ public class ValidationUtils {
                     targetNode.getProperties().remove(PROPERTY_ON_FLY_OBSERVABLE_VALUE);
                     targetNode.getProperties().remove(PROPERTY_ON_FLY_LISTENER);
                     targetNode.getProperties().remove(PROPERTY_ON_FLY_EVENT_FILTER);
-
+                    targetNode.getProperties().remove(PROPERTY_VALIDATION_RESULT);
+                    targetNode.getProperties().remove(PROPERTY_VALIDATION_RESULT_MESSAGE);
                     Object onFlyValue = targetNode.getProperties().get(PROPERTY_ON_FLY_OBSERVABLE_VALUE);
                     Object onFlyListener = targetNode.getProperties().get(PROPERTY_ON_FLY_LISTENER);
                     if (onFlyValue instanceof ObservableValue && onFlyListener instanceof ChangeListener) {

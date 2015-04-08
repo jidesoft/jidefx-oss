@@ -1,6 +1,18 @@
-include "module-common",
-        "module-comparators",
-        "module-converters",
-        "module-decoration",
-        "module-validation",
-        "module-fields"
+include 'module-common',
+    'module-comparators',
+    'module-converters',
+    'module-decoration',
+    'module-validation',
+    'module-fields'
+
+rootProject.name = 'jidefx'
+rootProject.children.each { project ->
+    int dash = project.name.indexOf('-')
+    String fileBaseName = 'jidefx-' + project.name[(dash + 1)..-1]
+    String projectDirName = project.name
+    project.name = fileBaseName
+    project.projectDir = new File(settingsDir, projectDirName)
+    project.buildFileName = "${fileBaseName}.gradle"
+    assert project.projectDir.isDirectory()
+    assert project.buildFile.isFile()
+}

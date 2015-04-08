@@ -1,0 +1,6 @@
+dependencies {
+    compile project(':jidefx-converters')
+    compile project(':jidefx-decoration')
+    compile 'com.miglayout:miglayout-core:5.0'
+    compile 'com.miglayout:miglayout-javafx:5.0'
+}

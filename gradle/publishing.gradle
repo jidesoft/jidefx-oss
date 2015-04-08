@@ -33,8 +33,13 @@ def pomConfig = {
     inceptionYear '2015'
     licenses {
         license([:]) {
-            name 'The Apache Software License, Version 2.0'
-            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            name 'GPL with classpath exception'
+            url 'http://www.gnu.org/licenses/gpl.txt'
+            distribution 'repo'
+        }
+        license([:]) {
+            name 'Free commercial license'
+            url 'http://www.jidesoft.com/purchase/SLA.htm'
             distribution 'repo'
         }
     }
@@ -42,16 +47,10 @@ def pomConfig = {
         url project.project_scm
     }
     developers {
-        [
-            neo : 'Thomas Anderson'
-        ].each { devId, devName ->
-            developer {
-                id devId
-                name devName
-                roles {
-                    role 'Developer'
-                }
-            }
+        developer {
+            id 'jidesoft'
+            name 'jidesoft'
+            email 'support@jidesoft.com'
         }
     }
 }

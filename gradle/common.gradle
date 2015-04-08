@@ -1,7 +1,7 @@
 def DSTAMP = new Date()
 def TSTAMP = new Date()
 
-def MODULE_NAME = project.name.substring("module-".length())
+def MODULE_NAME = project.name.substring("jidefx-".length())
 def DIST_NAME = "${DIST_PREFIX}" + MODULE_NAME + "-${VERSION}"
 def FILE_CLASS_JAR = DIST_NAME + "${DIST_SUFFIX}"
 def PATH_JAVADOC_TEMP = "build/src/javadoc/" + MODULE_NAME
@@ -64,35 +64,35 @@ task cleanSource (type: Delete) {
 }
 
 def MANIFEST_MAIN_CLASSES = [
-        "module-common":
+        "jidefx-common":
                 "jidefx.utils.Version",
 ]
 def MANIFEST_CLASSPATHES = [
-        "module-decoration":
+        "jidefx-decoration":
                 "${DIST_PREFIX}common-${VERSION}${DIST_SUFFIX}",
-        "module-fields":
+        "jidefx-fields":
                 "miglayout-core-4.2.jar, " +
                 "miglayout-javafx-4.2.jar, " +
                 "${DIST_PREFIX}common-${VERSION}${DIST_SUFFIX}, " +
                 "${DIST_PREFIX}converters-${VERSION}${DIST_SUFFIX}, " +
                 "${DIST_PREFIX}decoration-${VERSION}${DIST_SUFFIX}",
-        "module-validation":
+        "jidefx-validation":
                 "${DIST_PREFIX}common-${VERSION}${DIST_SUFFIX}, " +
                 "${DIST_PREFIX}decoration-${VERSION}${DIST_SUFFIX}"
 ]
 def MANIFEST_IMPORTS = [
-        "module-decoration":
+        "jidefx-decoration":
                 "jidefx.animation, " +
                 "jidefx.utils, " +
                 "com.jidefx.utils",
-        "module-fields":
+        "jidefx-fields":
                 "net.miginfocom.layout, " +
                 "org.tbee.javafx.scene.layout, " +
                 "com.jidefx.utils, " +
                 "jidefx.scene.control.decoration, " +
                 "jidefx.scene.control.popup, " +
                 "jidefx.utils",
-        "module-validation":
+        "jidefx-validation":
                 "jidefx.animation, " +
                 "jidefx.scene.control.popup, " +
                 "jidefx.utils, " +
@@ -100,22 +100,22 @@ def MANIFEST_IMPORTS = [
                 "com.jidefx.utils",
 ]
 def MANIFEST_EXPORTS = [
-        "module-common":
+        "jidefx-common":
                 "jidefx.animation, " +
                 "jidefx.scene.control.hints, " +
                 "jidefx.scene.control.popup, " +
                 "jidefx.scene.control.searchable, " +
                 "jidefx.utils",
-        "module-comparators":
+        "jidefx-comparators":
                 "jidefx.utils.comparator",
-        "module-converters":
+        "jidefx-converters":
                 "jidefx.utils.converter",
-        "module-decoration":
+        "jidefx-decoration":
                 "jidefx.scene.control.decoration",
-        "module-fields":
+        "jidefx-fields":
                 "jidefx.scene.control.combobox, " +
                 "jidefx.scene.control.field",
-        "module-validation":
+        "jidefx-validation":
                 "jidefx.scene.control.validation",
 ]
 

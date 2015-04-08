@@ -50,8 +50,8 @@ ext {
     projectsWithClirr = []
 }
 
-configure(subprojects) { subproj ->
-    subproj.apply from: rootProject.file('common.gradle')
+subprojects { subproj ->
+    subproj.apply from: rootProject.file('gradle/common.gradle')
     subproj.apply from: rootProject.file('gradle/publishing.gradle')
     subproj.apply from: rootProject.file('gradle/code-coverage.gradle')
     subproj.apply from: rootProject.file('gradle/code-quality.gradle')
@@ -69,36 +69,21 @@ configure(subprojects) { subproj ->
         classifier 'sources'
         from sourceSets.main.allSource
     }
-}
 
-project(':module-decoration') {
-    dependencies {
-        compile project(':module-common')
-    }
-}
-
-project(':module-validation') {
-    dependencies {
-        compile project(':module-decoration')
-    }
-}
-
-project(':module-fields') {
-    dependencies {
-        compile project(':module-converters')
-        compile project(':module-decoration')
-        compile 'com.miglayout:miglayout-core:5.0'
-        compile 'com.miglayout:miglayout-javafx:5.0'
+    if (JavaVersion.current().isJava8Compatible()) {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
     }
 }
 
 def allModules = [
-        "module-common",
-        "module-comparators",
-        "module-converters",
-        "module-decoration",
-        "module-fields",
-        "module-validation"
+        "jidefx-common",
+        "jidefx-comparators",
+        "jidefx-converters",
+        "jidefx-decoration",
+        "jidefx-fields",
+        "jidefx-validation"
 ]
 
 def RELEASE_BASE = "build/release-${VERSION}"
@@ -166,13 +151,13 @@ def PATH_RELEASE = 'dist'
 
 task updateVersion << {
     def updateFiles = [
-            'module-common': 'build.gradle',
-            'module-common/src/main/java/jidefx/utils': 'Version.java',
-            'module-comparators': 'build.gradle',
-            'module-converters': 'build.gradle',
-            'module-decoration': 'build.gradle',
-            'module-fields': 'build.gradle',
-            'module-validation': 'build.gradle',
+            'jidefx-common': 'build.gradle',
+            'jidefx-common/src/main/java/jidefx/utils': 'Version.java',
+            'jidefx-comparators': 'build.gradle',
+            'jidefx-converters': 'build.gradle',
+            'jidefx-decoration': 'build.gradle',
+            'jidefx-fields': 'build.gradle',
+            'jidefx-validation': 'build.gradle',
             'module-examples/project files/idea/.idea': 'workspace.xml',
             'module-examples/project files/idea/.idea/libraries': 'apache_commons.xml',
             'module-examples/project files/idea/.idea/libraries': 'jidefx.xml',

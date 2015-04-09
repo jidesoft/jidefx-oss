@@ -13,16 +13,16 @@ import javafx.util.Duration;
  * Port of RotateInDownRight from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes rotateInDownRight {
- * 	0% {
- * 		transform-origin: right bottom;
- * 		transform: rotate(90deg);
- * 		opacity: 0;
- * 	}
- * 	100% {
- * 		transform-origin: right bottom;
- * 		transform: rotate(0);
- * 		opacity: 1;
- * 	}
+ *     0% {
+ *         transform-origin: right bottom;
+ *         transform: rotate(90deg);
+ *         opacity: 0;
+ *     }
+ *     100% {
+ *         transform-origin: right bottom;
+ *         transform: rotate(0);
+ *         opacity: 1;
+ *     }
  * }
  * 
  * @author Jasper Potts

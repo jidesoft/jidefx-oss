@@ -5,7 +5,11 @@
  */
 package jidefx.utils.converter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 /**
  * An exact copy of the same name class from the JideFX Common Layer. Do it in order to remove the dependency on the

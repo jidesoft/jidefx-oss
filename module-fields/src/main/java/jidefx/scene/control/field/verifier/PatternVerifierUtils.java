@@ -4,8 +4,16 @@ import javafx.collections.ObservableMap;
 import javafx.util.Callback;
 
 import java.text.DateFormatSymbols;
-import java.time.temporal.*;
-import java.util.*;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.IsoFields;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A util class which has several methods to initialize predefined pattern verifiers.
@@ -290,12 +298,12 @@ public final class PatternVerifierUtils {
         FIELD_MAP.put('h', ChronoField.HOUR_OF_AMPM);        // SDF, LDML // TODO: use HOUR_OF_AMPM instead of CLOCK_. See exception below
 
 //java.time.temporal.UnsupportedTemporalTypeException: Unsupported field: ClockHourOfAmPm
-//	at java.time.temporal.TemporalAccessor.range(TemporalAccessor.java:172)
-//	at java.time.format.Parsed.range(Parsed.java)
-//	at java.time.temporal.TemporalAccessor.get(TemporalAccessor.java:215)
-//	at java.time.format.Parsed.get(Parsed.java)
-//	at jidefx.scene.control.field.verifier.IntegerTemporalPatternVerifier.parse(IntegerTemporalPatternVerifier.java:136)
-//	at jidefx.scene.control.field.verifier.IntegerTemporalPatternVerifier.parse(IntegerTemporalPatternVerifier.java:22)
+//    at java.time.temporal.TemporalAccessor.range(TemporalAccessor.java:172)
+//    at java.time.format.Parsed.range(Parsed.java)
+//    at java.time.temporal.TemporalAccessor.get(TemporalAccessor.java:215)
+//    at java.time.format.Parsed.get(Parsed.java)
+//    at jidefx.scene.control.field.verifier.IntegerTemporalPatternVerifier.parse(IntegerTemporalPatternVerifier.java:136)
+//    at jidefx.scene.control.field.verifier.IntegerTemporalPatternVerifier.parse(IntegerTemporalPatternVerifier.java:22)
 
         FIELD_MAP.put('m', ChronoField.MINUTE_OF_HOUR);            // SDF, LDML
         FIELD_MAP.put('s', ChronoField.SECOND_OF_MINUTE);          // SDF, LDML

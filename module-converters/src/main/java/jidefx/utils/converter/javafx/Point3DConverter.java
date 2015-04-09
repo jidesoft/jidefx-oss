@@ -8,14 +8,13 @@ package jidefx.utils.converter.javafx;
 
 import javafx.geometry.Point3D;
 import jidefx.utils.converter.ConverterContext;
-import jidefx.utils.converter.ObjectConverter;
 import jidefx.utils.converter.ValuesConverter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link ObjectConverter} for {@link Point3D}.
+ * {@link jidefx.utils.converter.ObjectConverter} for {@link Point3D}.
  */
 public class Point3DConverter extends ValuesConverter<Point3D, Double> {
     public Point3DConverter() {

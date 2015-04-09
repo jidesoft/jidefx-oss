@@ -13,8 +13,8 @@ import javafx.util.Duration;
  * Which was originally authored by Nick Pettit - https://github.com/nickpettit/glide 
  * 
  * {@literal @}keyframes rollIn {
- * 	0% { opacity: 0; transform: translateX(-100%) rotate(-120deg); }
- * 	100% { opacity: 1; transform: translateX(0px) rotate(0deg); }
+ *     0% { opacity: 0; transform: translateX(-100%) rotate(-120deg); }
+ *     100% { opacity: 1; transform: translateX(0px) rotate(0deg); }
  * }
  * 
  * @author Jasper Potts

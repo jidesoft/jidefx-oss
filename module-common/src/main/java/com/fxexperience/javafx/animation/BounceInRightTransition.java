@@ -12,20 +12,20 @@ import javafx.util.Duration;
  * Port of BounceInRightBig from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes bounceInRight {
- * 	0% {
- * 		opacity: 0;
- * 		-webkit-transform: translateX(2000px);
- * 	}
- * 	60% {
- * 		opacity: 1;
- * 		-webkit-transform: translateX(-30px);
- * 	}
- * 	80% {
- * 		-webkit-transform: translateX(10px);
- * 	}
- * 	100% {
- * 		-webkit-transform: translateX(0);
- * 	}
+ *     0% {
+ *         opacity: 0;
+ *         -webkit-transform: translateX(2000px);
+ *     }
+ *     60% {
+ *         opacity: 1;
+ *         -webkit-transform: translateX(-30px);
+ *     }
+ *     80% {
+ *         -webkit-transform: translateX(10px);
+ *     }
+ *     100% {
+ *         -webkit-transform: translateX(0);
+ *     }
  * }
  * 
  * @author Jasper Potts

@@ -12,8 +12,8 @@ import javafx.util.Duration;
  * Port of Pulse from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}@keyframes pulse {
- *     0% { transform: scale(1); }	
- * 	50% { transform: scale(1.1); }
+ *     0% { transform: scale(1); }
+ *     50% { transform: scale(1.1); }
  *     100% { transform: scale(1); }
  * }
  *

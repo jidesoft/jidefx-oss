@@ -16,26 +16,26 @@ import javafx.util.Duration;
  * Port of Flip from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes flip {
- * 	0% {
- * 		transform: perspective(400px) rotateY(0);
- * 		animation-timing-function: ease-out;
- * 	}
- * 	40% {
- * 		transform: perspective(400px) translateZ(150px) rotateY(170deg);
- * 		animation-timing-function: ease-out;
- * 	}
- * 	50% {
- * 		transform: perspective(400px) translateZ(150px) rotateY(190deg) scale(1);
- * 		animation-timing-function: ease-in;
- * 	}
- * 	80% {
- * 		transform: perspective(400px) rotateY(360deg) scale(.95);
- * 		animation-timing-function: ease-in;
- * 	}
- * 	100% {
- * 		transform: perspective(400px) scale(1);
- * 		animation-timing-function: ease-in;
- * 	}
+ *     0% {
+ *         transform: perspective(400px) rotateY(0);
+ *         animation-timing-function: ease-out;
+ *     }
+ *     40% {
+ *         transform: perspective(400px) translateZ(150px) rotateY(170deg);
+ *         animation-timing-function: ease-out;
+ *     }
+ *     50% {
+ *         transform: perspective(400px) translateZ(150px) rotateY(190deg) scale(1);
+ *         animation-timing-function: ease-in;
+ *     }
+ *     80% {
+ *         transform: perspective(400px) rotateY(360deg) scale(.95);
+ *         animation-timing-function: ease-in;
+ *     }
+ *     100% {
+ *         transform: perspective(400px) scale(1);
+ *         animation-timing-function: ease-in;
+ *     }
  * }
  *
  * @author Jasper Potts

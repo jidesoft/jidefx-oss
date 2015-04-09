@@ -429,7 +429,7 @@ public class DemoData {
                 "Nebraska",
                 "Nevada",
                 "New Hampshire",
-                "New Jersey	 ",
+                "New Jersey     ",
                 "New Mexico",
                 "New York",
                 "North Carolina",

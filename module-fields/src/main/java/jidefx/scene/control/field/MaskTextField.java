@@ -9,7 +9,12 @@ package jidefx.scene.control.field;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.beans.property.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -24,7 +29,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.TextField;
 import javafx.util.Callback;
-import jidefx.scene.control.decoration.*;
+import jidefx.scene.control.decoration.DecorationDelegate;
+import jidefx.scene.control.decoration.DecorationSupport;
+import jidefx.scene.control.decoration.DecorationUtils;
+import jidefx.scene.control.decoration.Decorator;
+import jidefx.scene.control.decoration.PredefinedDecorators;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -41,13 +50,13 @@ import java.util.Map;
  * <b >InputMask</b>
  * <p>
  * MaskTextField has setInputMask(String mask) to set the mask we mentioned above. The pre-defined mask characters are:
- * <ul> <li>A	INPUT_MASK_LETTER	ASCII alphabetic character required. A-Z, a-z. <li>N	INPUT_MASK_DIGIT_OR_LETTER	ASCII
- * alphanumeric character required. A-Z, a-z, 0-9.</li> <li>X	INPUT_MASK_ANY_NON_SPACE	Any character required except
- * spaces. <li>H	INPUT_MASK_HAX	Hexadecimal character required. A-F, a-f, 0-9. <li>D	INPUT_MASK_DIGIT_NON_ZERO	ASCII
- * digit required. 1-9. <li>9	INPUT_MASK_DIGIT	ASCII digit required. 0-9. <li>8	INPUT_MASK_DIGIT_0_TO_8	ASCII digit
+ * <ul> <li>A    INPUT_MASK_LETTER    ASCII alphabetic character required. A-Z, a-z. <li>N    INPUT_MASK_DIGIT_OR_LETTER    ASCII
+ * alphanumeric character required. A-Z, a-z, 0-9.</li> <li>X    INPUT_MASK_ANY_NON_SPACE    Any character required except
+ * spaces. <li>H    INPUT_MASK_HAX    Hexadecimal character required. A-F, a-f, 0-9. <li>D    INPUT_MASK_DIGIT_NON_ZERO    ASCII
+ * digit required. 1-9. <li>9    INPUT_MASK_DIGIT    ASCII digit required. 0-9. <li>8    INPUT_MASK_DIGIT_0_TO_8    ASCII digit
  * required. 0-8. <li>7, 6, 5, 4, 3, 2 and so on which means only allows from 0 to that number
- * <li>2	INPUT_MASK_DIGIT_0_TO_2	ASCII digit required. 0-2. <li>1	INPUT_MASK_DIGIT_0_TO_1	ASCII digit required. 0-1, for
- * example, a binary number <li>0	INPUT_MASK_DIGIT_ZERO	0 required <li>G	INPUT_MASK_DIGIT_GROUP	Indicates a Group. This
+ * <li>2    INPUT_MASK_DIGIT_0_TO_2    ASCII digit required. 0-2. <li>1    INPUT_MASK_DIGIT_0_TO_1    ASCII digit required. 0-1, for
+ * example, a binary number <li>0    INPUT_MASK_DIGIT_ZERO    0 required <li>G    INPUT_MASK_DIGIT_GROUP    Indicates a Group. This
  * is the special one, we will discuss it later </ul> If the setInitialText is not called, the InputMask will be used to
  * create the initial text for the field. We create it by removing all masks, replace them with spaces or the specified
  * placeholder character, and leave the non-mask characters where they are. The placeholder character can be set using
@@ -61,10 +70,10 @@ import java.util.Map;
  * automatically convert the entered character to another character. This mask is optional. It can be set using
  * setConversionMask(String mask). If not set, there will be no conversion. If you ever set the mask, please make sure
  * they have the exact same length as the InputMask, and have a valid conversion mask character at the exact position
- * where there is an InputMask character. <ul> <li>U	CONVERSION_MASK_UPPER_CASE	Uppercase required. If user enters a
+ * where there is an InputMask character. <ul> <li>U    CONVERSION_MASK_UPPER_CASE    Uppercase required. If user enters a
  * lowercase letter, it will be automatically converted to the corresponding uppercase letter.
- * <li>L	CONVERSION_MASK_LOWER_CASE	Lowercase required. If user enters an uppercase letter, it will be automatically
- * converted to the corresponding lowercase letter. <li>Any other undefined chars	CONVERSION_MASK_IGNORE	No conversion
+ * <li>L    CONVERSION_MASK_LOWER_CASE    Lowercase required. If user enters an uppercase letter, it will be automatically
+ * converted to the corresponding lowercase letter. <li>Any other undefined chars    CONVERSION_MASK_IGNORE    No conversion
  * </ul>
  * <p>
  * {@code RequiredMask}
@@ -73,8 +82,8 @@ import java.util.Map;
  * can be set using setRequiredMask(String mask). If not set, a valid non-space character is required on all the
  * positions. If you ever set the mask, please make sure they have the same length as the InputMask, and have a valid
  * required mask character at the exact position where there is an InputMask character. <ul>
- * <li>R	REQUIRED_MASK_REQUIRED	Required. Users must enter a valid character that matches with the mask on this
- * position. <li>Any other undefined chars	REQUIRED_MASK_NOT_REQUIRED	Not required. User can enter a space at this
+ * <li>R    REQUIRED_MASK_REQUIRED    Required. Users must enter a valid character that matches with the mask on this
+ * position. <li>Any other undefined chars    REQUIRED_MASK_NOT_REQUIRED    Not required. User can enter a space at this
  * position. </ul>
  */
 @SuppressWarnings({"Convert2Lambda", "SpellCheckingInspection"})

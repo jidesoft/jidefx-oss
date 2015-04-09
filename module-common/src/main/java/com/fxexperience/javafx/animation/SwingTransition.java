@@ -12,11 +12,11 @@ import javafx.util.Duration;
  * Port of Swing from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes swing {
- * 	20% { transform: rotate(15deg); }	
- * 	40% { transform: rotate(-10deg); }
- * 	60% { transform: rotate(5deg); }	
- * 	80% { transform: rotate(-5deg); }	
- * 	100% { transform: rotate(0deg); }
+ *     20% { transform: rotate(15deg); }
+ *     40% { transform: rotate(-10deg); }
+ *     60% { transform: rotate(5deg); }
+ *     80% { transform: rotate(-5deg); }
+ *     100% { transform: rotate(0deg); }
  * }
  *
  * @author Jasper Potts

@@ -12,11 +12,11 @@ import javafx.util.Duration;
  * Port of Shake from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes tada {
- * 	0% {transform: scale(1);}	
- * 	10%, 20% {transform: scale(0.9) rotate(-3deg);}
- * 	30%, 50%, 70%, 90% {transform: scale(1.1) rotate(3deg);}
- * 	40%, 60%, 80% {transform: scale(1.1) rotate(-3deg);}
- * 	100% {transform: scale(1) rotate(0);}
+ *     0% {transform: scale(1);}
+ *     10%, 20% {transform: scale(0.9) rotate(-3deg);}
+ *     30%, 50%, 70%, 90% {transform: scale(1.1) rotate(3deg);}
+ *     40%, 60%, 80% {transform: scale(1.1) rotate(-3deg);}
+ *     100% {transform: scale(1) rotate(0);}
  * }
  * 
  * @author Jasper Potts

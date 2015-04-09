@@ -61,6 +61,7 @@ public class LocalDateConverter extends TemporalAccessConverter<LocalDate> {
                     return LocalDate.from(dtf.withLocale(Locale.getDefault()).parse(string));
                 }
                 catch (Exception ignored) {
+                    // empty on purpose
                 }
             }
             return null;

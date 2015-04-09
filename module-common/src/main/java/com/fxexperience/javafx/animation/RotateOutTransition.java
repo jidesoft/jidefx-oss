@@ -12,16 +12,16 @@ import javafx.util.Duration;
  * Port of RotateOut from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes rotateOut {
- * 	0% {
- * 		transform-origin: center center;
- * 		transform: rotate(0);
- * 		opacity: 1;
- * 	}
- * 	100% {
- * 		transform-origin: center center;
- * 		transform: rotate(200deg);
- * 		opacity: 0;
- * 	}
+ *     0% {
+ *         transform-origin: center center;
+ *         transform: rotate(0);
+ *         opacity: 1;
+ *     }
+ *     100% {
+ *         transform-origin: center center;
+ *         transform: rotate(200deg);
+ *         opacity: 0;
+ *     }
  * }
  * 
  * @author Jasper Potts

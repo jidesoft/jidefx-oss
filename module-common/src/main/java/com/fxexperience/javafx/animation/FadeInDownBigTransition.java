@@ -12,14 +12,14 @@ import javafx.util.Duration;
  * Port of FadeInDownBig from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes fadeInDownBig {
- * 	0% {
- * 		opacity: 0;
- * 		transform: translateY(-2000px);
- * 	}
- * 	100% {
- * 		opacity: 1;
- * 		transform: translateY(0);
- * 	}
+ *     0% {
+ *         opacity: 0;
+ *         transform: translateY(-2000px);
+ *     }
+ *     100% {
+ *         opacity: 1;
+ *         transform: translateY(0);
+ *     }
  * }
  * 
  * @author Jasper Potts

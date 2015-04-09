@@ -12,14 +12,14 @@ import javafx.util.Duration;
  * Port of FadeInLeftBig from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes fadeInLeftBig {
- * 	0% {
- * 		opacity: 0;
- * 		transform: translateX(-2000px);
- * 	}
- * 	100% {
- * 		opacity: 1;
- * 		transform: translateX(0);
- * 	}
+ *     0% {
+ *         opacity: 0;
+ *         transform: translateX(-2000px);
+ *     }
+ *     100% {
+ *         opacity: 1;
+ *         transform: translateX(0);
+ *     }
  * }
  * 
  * @author Jasper Potts

@@ -14,13 +14,12 @@ import jidefx.scene.control.field.verifier.PatternVerifierUtils;
 import jidefx.utils.CommonUtils;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 
 /**
- * A {@code PopupField} for {@link LocalDate}.
+ * A {@code PopupField} for {@link java.time.LocalDate}.
  */
 public class LocalTimeField extends PopupField<LocalTime> {
     public LocalTimeField() {

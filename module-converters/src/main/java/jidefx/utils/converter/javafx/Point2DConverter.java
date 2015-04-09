@@ -7,14 +7,13 @@ package jidefx.utils.converter.javafx;
 
 import javafx.geometry.Point2D;
 import jidefx.utils.converter.ConverterContext;
-import jidefx.utils.converter.ObjectConverter;
 import jidefx.utils.converter.ValuesConverter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link ObjectConverter} for {@link Point2D}.
+ * {@link jidefx.utils.converter.ObjectConverter} for {@link Point2D}.
  */
 public class Point2DConverter extends ValuesConverter<Point2D, Double> {
     public Point2DConverter() {

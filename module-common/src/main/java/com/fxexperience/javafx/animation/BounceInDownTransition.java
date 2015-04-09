@@ -12,20 +12,20 @@ import javafx.util.Duration;
  * Port of BounceInDownBig from Animate.css http://daneden.me/animate by Dan Eden
  *
  * {@literal @}keyframes  bounceInDown {
- * 	0% {
- * 		opacity: 0;
- * 		-webkit-transform: translateY(-2000px);
- * 	}
- * 	60% {
- * 		opacity: 1;
- * 		-webkit-transform: translateY(30px);
- * 	}
- * 	80% {
- * 		-webkit-transform: translateY(-10px);
- * 	}
- * 	100% {
- * 		-webkit-transform: translateY(0);
- * 	}
+ *     0% {
+ *         opacity: 0;
+ *         -webkit-transform: translateY(-2000px);
+ *     }
+ *     60% {
+ *         opacity: 1;
+ *         -webkit-transform: translateY(30px);
+ *     }
+ *     80% {
+ *         -webkit-transform: translateY(-10px);
+ *     }
+ *     100% {
+ *         -webkit-transform: translateY(0);
+ *     }
  * }
  *
  * @author Jasper Potts

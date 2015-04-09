@@ -7,14 +7,13 @@ package jidefx.utils.converter.javafx;
 
 import javafx.geometry.Dimension2D;
 import jidefx.utils.converter.ConverterContext;
-import jidefx.utils.converter.ObjectConverter;
 import jidefx.utils.converter.ValuesConverter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link ObjectConverter} for {@link Dimension2D}.
+ * {@link jidefx.utils.converter.ObjectConverter} for {@link Dimension2D}.
  */
 public class Dimension2DConverter extends ValuesConverter<Dimension2D, Double> {
     public Dimension2DConverter() {

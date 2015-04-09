@@ -12,8 +12,8 @@ import javafx.util.Duration;
  * Port of Flash from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes flash {
- * 	0%, 50%, 100% {opacity: 1;}	
- * 	25%, 75% {opacity: 0;}
+ *     0%, 50%, 100% {opacity: 1;}
+ *     25%, 75% {opacity: 0;}
  * }
  * 
  * @author Jasper Potts

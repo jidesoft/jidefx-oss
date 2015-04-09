@@ -12,14 +12,14 @@ import javafx.util.Duration;
  * Port of FadeOutLeft from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes fadeOutLeft {
- * 	0% {
- * 		opacity: 0;
- * 		transform: translateX(0);
- * 	}
- * 	100% {
- * 		opacity: 1;
- * 		transform: translateX(-20px);
- * 	}
+ *     0% {
+ *         opacity: 0;
+ *         transform: translateX(0);
+ *     }
+ *     100% {
+ *         opacity: 1;
+ *         transform: translateX(-20px);
+ *     }
  * }
  * 
  * @author Jasper Potts

@@ -12,17 +12,17 @@ import javafx.util.Duration;
  * Port of BounceOutRightBig from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes bounceOutRight {
- * 	0% {
- * 		-o-transform: translateX(0);
- * 	}
- * 	20% {
- * 		opacity: 1;
- * 		-o-transform: translateX(-20px);
- * 	}
- * 	100% {
- * 		opacity: 0;
- * 		-o-transform: translateX(2000px);
- * 	}
+ *     0% {
+ *         -o-transform: translateX(0);
+ *     }
+ *     20% {
+ *         opacity: 1;
+ *         -o-transform: translateX(-20px);
+ *     }
+ *     100% {
+ *         opacity: 0;
+ *         -o-transform: translateX(2000px);
+ *     }
  * }
  * 
  * @author Jasper Potts

@@ -7,7 +7,11 @@ package com.jidefx.utils;
 
 import jidefx.utils.TypeUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 /**
  * {@code CacheMap} is a two-level {@code HashMap}. It uses Class as the key and you can map the key to an

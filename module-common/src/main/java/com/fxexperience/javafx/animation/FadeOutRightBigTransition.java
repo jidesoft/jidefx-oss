@@ -12,14 +12,14 @@ import javafx.util.Duration;
  * Port of FadeOutRightBig from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes fadeOutRightBig {
- * 	0% {
- * 		opacity: 1;
- * 		transform: translateX(0);
- * 	}
- * 	100% {
- * 		opacity: 0;
- * 		transform: translateX(2000px);
- * 	}
+ *     0% {
+ *         opacity: 1;
+ *         transform: translateX(0);
+ *     }
+ *     100% {
+ *         opacity: 0;
+ *         transform: translateX(2000px);
+ *     }
  * }
  * 
  * @author Jasper Potts

@@ -8,14 +8,13 @@ package jidefx.utils.converter.javafx;
 
 import javafx.geometry.Rectangle2D;
 import jidefx.utils.converter.ConverterContext;
-import jidefx.utils.converter.ObjectConverter;
 import jidefx.utils.converter.ValuesConverter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link ObjectConverter} for {@link Rectangle2D}.
+ * {@link jidefx.utils.converter.ObjectConverter} for {@link Rectangle2D}.
  */
 public class Rectangle2DConverter extends ValuesConverter<Rectangle2D, Double> {
     public Rectangle2DConverter() {

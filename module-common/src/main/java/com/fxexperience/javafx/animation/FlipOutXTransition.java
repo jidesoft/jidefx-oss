@@ -19,7 +19,7 @@ import javafx.util.Duration;
  *         transform: perspective(400px) rotateX(0deg);
  *         opacity: 1;
  *     }
- * 	100% {
+ *     100% {
  *         transform: perspective(400px) rotateX(90deg);
  *         opacity: 0;
  *     }

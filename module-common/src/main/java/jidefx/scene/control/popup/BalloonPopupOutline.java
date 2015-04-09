@@ -13,10 +13,15 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Side;
-import javafx.scene.shape.*;
+import javafx.scene.shape.ArcTo;
+import javafx.scene.shape.HLineTo;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.StrokeType;
+import javafx.scene.shape.VLineTo;
 
 /**
- * {@code BalloonPopupOutline} is a balloon shaped {@link Path} which can be used to display a balloon-like popup. The
+ * {@code BalloonPopupOutline} is a balloon shaped {@link javafx.scene.shape.Path} which can be used to display a balloon-like popup. The
  * size, shape, the arrow size and position can be customized using various properties on this class.
  */
 public class BalloonPopupOutline extends PopupOutline {

@@ -8,14 +8,13 @@ package jidefx.utils.converter.javafx;
 
 import javafx.geometry.BoundingBox;
 import jidefx.utils.converter.ConverterContext;
-import jidefx.utils.converter.ObjectConverter;
 import jidefx.utils.converter.ValuesConverter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link ObjectConverter} for {@link BoundingBox}.
+ * {@link jidefx.utils.converter.ObjectConverter} for {@link BoundingBox}.
  */
 public class BoundingBoxConverter extends ValuesConverter<BoundingBox, Double> {
     public BoundingBoxConverter() {

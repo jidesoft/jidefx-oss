@@ -6,11 +6,10 @@
 
 package jidefx.utils.converter;
 
-import java.util.Calendar;
 import java.util.Date;
 
 /**
- * {@link ObjectConverter} implementation for {@link Date}, {@link Calendar} or {@link Number}. All of aforementioned
+ * {@link ObjectConverter} implementation for {@link Date}, {@link java.util.Calendar} or {@link Number}. All of aforementioned
  * data types can be accepted by the toString method. For the fromString method, it will only return {@link Date}. Its
  * subclasses might return Calendar or Number.
  */

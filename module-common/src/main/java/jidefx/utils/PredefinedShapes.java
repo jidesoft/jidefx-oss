@@ -9,7 +9,13 @@ package jidefx.utils;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.*;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeType;
 
 /**
  * A collection of pre-defined shapes. All the methods take a size as parameter and returns a Node which is a Shape or a

@@ -12,8 +12,8 @@ import javafx.util.Duration;
  * Port of FadeOut from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes fadeOut {
- * 	0% {opacity: 1;}	
- * 	100% {opacity: 0;}
+ *     0% {opacity: 1;}
+ *     100% {opacity: 0;}
  * }
  * 
  * @author Jasper Potts

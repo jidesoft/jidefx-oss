@@ -13,16 +13,16 @@ import javafx.util.Duration;
  * Port of RotateOutDownLeft from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes rotateOutDownLeft {
- * 	0% {
- * 		transform-origin: left bottom;
- * 		transform: rotate(0);
- * 		opacity: 1;
- * 	}
- * 	100% {
- * 		transform-origin: left bottom;
- * 		transform: rotate(90deg);
- * 		opacity: 0;
- * 	}
+ *     0% {
+ *         transform-origin: left bottom;
+ *         transform: rotate(0);
+ *         opacity: 1;
+ *     }
+ *     100% {
+ *         transform-origin: left bottom;
+ *         transform: rotate(90deg);
+ *         opacity: 0;
+ *     }
  * }
  * 
  * @author Jasper Potts

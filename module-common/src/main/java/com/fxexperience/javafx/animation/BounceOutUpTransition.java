@@ -12,17 +12,17 @@ import javafx.util.Duration;
  * Port of BounceOutUpBig from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}bounceOutUp {
- * 	0% {
- * 		transform: translateY(0);
- * 	}
- * 	20% {
- * 		opacity: 1;
- * 		transform: translateY(20px);
- * 	}
- * 	100% {
- * 		opacity: 0;
- * 		transform: translateY(-2000px);
- * 	}
+ *     0% {
+ *         transform: translateY(0);
+ *     }
+ *     20% {
+ *         opacity: 1;
+ *         transform: translateY(20px);
+ *     }
+ *     100% {
+ *         opacity: 0;
+ *         transform: translateY(-2000px);
+ *     }
  * }
  * 
  * @author Jasper Potts

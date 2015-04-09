@@ -66,6 +66,7 @@ public class IntegerTemporalPatternVerifier extends TemporalPatternVerifier impl
                 _value = _value.minus(10, _temporalUnit);
             }
             catch (Exception ignored) {
+                // empty on purpose
             }
         }
         return null;
@@ -78,6 +79,7 @@ public class IntegerTemporalPatternVerifier extends TemporalPatternVerifier impl
                 _value = _value.plus(10, _temporalUnit);
             }
             catch (Exception ignored) {
+                // empty on purpose
             }
         }
         return null;
@@ -90,6 +92,7 @@ public class IntegerTemporalPatternVerifier extends TemporalPatternVerifier impl
                 _value = _value.plus(1, _temporalUnit);
             }
             catch (Exception ignored) {
+                // empty on purpose
             }
         }
         return null;
@@ -102,6 +105,7 @@ public class IntegerTemporalPatternVerifier extends TemporalPatternVerifier impl
                 _value = _value.minus(1, _temporalUnit);
             }
             catch (Exception ignored) {
+                // empty on purpose
             }
         }
         return null;

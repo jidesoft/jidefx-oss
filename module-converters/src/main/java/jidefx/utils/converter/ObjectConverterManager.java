@@ -6,11 +6,26 @@
 
 package jidefx.utils.converter;
 
-import javafx.geometry.*;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Dimension2D;
+import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
+import javafx.geometry.Point3D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import jidefx.utils.converter.javafx.*;
+import jidefx.utils.converter.javafx.BoundingBoxConverter;
+import jidefx.utils.converter.javafx.ColorConverter;
+import jidefx.utils.converter.javafx.Dimension2DConverter;
+import jidefx.utils.converter.javafx.FontConverter;
+import jidefx.utils.converter.javafx.HexColorConverter;
+import jidefx.utils.converter.javafx.InsetsConverter;
+import jidefx.utils.converter.javafx.Point2DConverter;
+import jidefx.utils.converter.javafx.Point3DConverter;
+import jidefx.utils.converter.javafx.Rectangle2DConverter;
+import jidefx.utils.converter.javafx.RgbColorConverter;
+import jidefx.utils.converter.javafx.WebColorConverter;
 import jidefx.utils.converter.time.LocalDateConverter;
 import jidefx.utils.converter.time.LocalDateTimeConverter;
 import jidefx.utils.converter.time.LocalTimeConverter;

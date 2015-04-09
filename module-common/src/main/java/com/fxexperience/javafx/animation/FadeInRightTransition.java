@@ -12,14 +12,14 @@ import javafx.util.Duration;
  * Port of FadeInRight from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes fadeInRight {
- * 	0% {
- * 		opacity: 0;
- * 		transform: translateX(20px);
- * 	}
- * 	100% {
- * 		opacity: 1;
- * 		transform: translateX(0);
- * 	}
+ *     0% {
+ *         opacity: 0;
+ *         transform: translateX(20px);
+ *     }
+ *     100% {
+ *         opacity: 1;
+ *         transform: translateX(0);
+ *     }
  * }
  * 
  * @author Jasper Potts

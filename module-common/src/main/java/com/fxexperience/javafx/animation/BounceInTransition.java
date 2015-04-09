@@ -12,20 +12,20 @@ import javafx.util.Duration;
  * Port of BounceIn from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes bounceIn {
- * 	0% {
- * 		opacity: 0;
- * 		-webkit-transform: scale(.3);
- * 	}
- * 	50% {
- * 		opacity: 1;
- * 		-webkit-transform: scale(1.05);
- * 	}
- * 	70% {
- * 		-webkit-transform: scale(.9);
- * 	}
- * 	100% {
- * 		-webkit-transform: scale(1);
- * 	}
+ *     0% {
+ *         opacity: 0;
+ *         -webkit-transform: scale(.3);
+ *     }
+ *     50% {
+ *         opacity: 1;
+ *         -webkit-transform: scale(1.05);
+ *     }
+ *     70% {
+ *         -webkit-transform: scale(.9);
+ *     }
+ *     100% {
+ *         -webkit-transform: scale(1);
+ *     }
  * }
  * 
  * @author Jasper Potts

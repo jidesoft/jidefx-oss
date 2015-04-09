@@ -12,16 +12,16 @@ import javafx.util.Duration;
  * Port of RotateIn from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes rotateIn {
- * 	0% {
- * 		transform-origin: center center;
- * 		transform: rotate(-200deg);
- * 		opacity: 0;
- * 	}=
- * 	100% {
- * 		transform-origin: center center;
- * 		transform: rotate(0);
- * 		opacity: 1;
- * 	}
+ *     0% {
+ *         transform-origin: center center;
+ *         transform: rotate(-200deg);
+ *         opacity: 0;
+ *     }=
+ *     100% {
+ *         transform-origin: center center;
+ *         transform: rotate(0);
+ *         opacity: 1;
+ *     }
  * }
  * 
  * @author Jasper Potts

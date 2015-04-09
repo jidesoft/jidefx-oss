@@ -13,7 +13,11 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.scene.shape.*;
+import javafx.scene.shape.ArcTo;
+import javafx.scene.shape.HLineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.StrokeType;
+import javafx.scene.shape.VLineTo;
 
 /**
  * {@code RectanglePopupOutline} is a rectangle shaped {@link javafx.scene.shape.Path} which can be used to display a

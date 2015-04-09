@@ -12,8 +12,8 @@ import javafx.util.Duration;
  * Port of FadeIn from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes fadeIn {
- * 	0% {opacity: 0;}	
- * 	100% {opacity: 1;}
+ *     0% {opacity: 0;}
+ *     100% {opacity: 1;}
  * }
  * 
  * @author Jasper Potts

@@ -8,14 +8,13 @@ package jidefx.utils.converter.javafx;
 
 import javafx.geometry.Insets;
 import jidefx.utils.converter.ConverterContext;
-import jidefx.utils.converter.ObjectConverter;
 import jidefx.utils.converter.ValuesConverter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link ObjectConverter} for {@link Insets}.
+ * {@link jidefx.utils.converter.ObjectConverter} for {@link Insets}.
  */
 public class InsetsConverter extends ValuesConverter<Insets, Double> {
     public InsetsConverter() {

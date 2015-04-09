@@ -12,14 +12,14 @@ import javafx.util.Duration;
  * Port of FadeInOut from Animate.css http://daneden.me/animate by Dan Eden
  * 
  * {@literal @}keyframes fadeOutUp {
- * 	0% {
- * 		opacity: 1;
- * 		transform: translateY(0);
- * 	}
- * 	100% {
- * 		opacity: 0;
- * 		transform: translateY(-20px);
- * 	}
+ *     0% {
+ *         opacity: 1;
+ *         transform: translateY(0);
+ *     }
+ *     100% {
+ *         opacity: 0;
+ *         transform: translateY(-20px);
+ *     }
  * }
  * 
  * @author Jasper Potts

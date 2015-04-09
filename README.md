@@ -23,7 +23,7 @@ build
        |-- examples              ; examples source code
        |-- javadoc               ; javadoc jars
        |-- lib                   ; required libs for examples
-       |-- src	                 ; source code jars
+       |-- src                   ; source code jars
        |-- build.gradle          ; gradle build script for examples, TextFieldsDemo will be executed by default
        |-- jidefx-demo.iml       ; IntelliJ IDEA module file
 </pre>   

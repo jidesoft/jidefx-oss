@@ -172,13 +172,7 @@ def PATH_RELEASE = 'dist'
 
 task updateVersion << {
     def updateFiles = [
-            'jidefx-common': 'build.gradle',
             'jidefx-common/src/main/java/jidefx/utils': 'Version.java',
-            'jidefx-comparators': 'build.gradle',
-            'jidefx-converters': 'build.gradle',
-            'jidefx-decoration': 'build.gradle',
-            'jidefx-fields': 'build.gradle',
-            'jidefx-validation': 'build.gradle',
             'module-examples/project files/idea/.idea': 'workspace.xml',
             'module-examples/project files/idea/.idea/libraries': 'apache_commons.xml',
             'module-examples/project files/idea/.idea/libraries': 'jidefx.xml',

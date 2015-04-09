@@ -73,6 +73,7 @@ license {
     mapping {
         java   = 'SLASHSTAR_STYLE'
         groovy = 'SLASHSTAR_STYLE'
+        fxml   = 'XML_STYLE'
     }
     ext.year = '2002-2015'
     exclude '**/*.png'

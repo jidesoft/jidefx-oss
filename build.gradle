@@ -96,6 +96,14 @@ subprojects { subproj ->
             options.addStringOption('Xdoclint:none', '-quiet')
         }
     }
+
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        testCompile 'junit:junit:4.12'
+    }
 }
 
 def allModules = [

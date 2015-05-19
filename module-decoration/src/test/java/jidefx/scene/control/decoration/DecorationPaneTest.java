@@ -22,54 +22,17 @@ package jidefx.scene.control.decoration;
 
 import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.TextField;
 import org.junit.Test;
 
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 public class DecorationPaneTest {
     static {
         // force initialization of UI toolkit
         new JFXPanel();
-    }
-
-    @Test
-    public void ensureDecorationPaneHasASingleChild() {
-        // given:
-        TextField content = new TextField();
-        TextField field = new TextField();
-        DecorationPane decorationPane = new DecorationPane();
-
-        // expect:
-        assertNull(decorationPane.getContent());
-
-        // when:
-        decorationPane.setContent(content);
-        // then:
-        assertNotNull(decorationPane.getContent());
-        assertEquals(content, decorationPane.getContent());
-
-        // when:
-        decorationPane.setContent(null);
-        // then:
-        assertNull(decorationPane.getContent());
-
-        // when:
-        decorationPane.getChildren().add(content);
-        // then:
-        assertNotNull(decorationPane.getContent());
-        assertEquals(content, decorationPane.getContent());
-
-        // when:
-        decorationPane.getChildren().add(field);
-        // then:
-        assertEquals(1, decorationPane.getChildren().size());
-        assertNotNull(decorationPane.getContent());
-        assertEquals(field, decorationPane.getContent());
     }
 
     @Test

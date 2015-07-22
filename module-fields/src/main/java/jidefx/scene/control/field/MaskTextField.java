@@ -629,9 +629,18 @@ public class MaskTextField extends TextField implements DecorationSupport {
             int count = end - start;
             int caret = getCaretPosition();
 
+            int caretStart = caret;
+            
+            // don´t accept user input space
+            if (text.equals(" "))
+            {
+            	return;
+            }
+            
             String existingText = getText();
             String deletedText = existingText.substring(start, end);
             String newText = keepFixedText(deletedText);
+            
             super.replaceText(start, end, newText);
 
             while (start < getInputMask().length()) {
@@ -660,6 +669,19 @@ public class MaskTextField extends TextField implements DecorationSupport {
                     else {
                         break;
                     }
+                    
+                    // Fix mask have space and caret is in this position
+                    String inputMask = getInputMask();
+                    if ( inputMask != null )
+                    {
+                 	   while ( Character.isSpaceChar(inputMask.charAt(start)) && (start < inputMask.length()) && (!text.isEmpty()))
+                 	   {
+                 		   start++;
+                 	   }
+                 	   
+                 	   this.replaceText(start, start, text);
+                    }
+                    
                 }
                 // only break when there is no new text and we are done with the count that we are expected to do
                 // if there are still new text, we will continue even when the count is done
@@ -667,6 +689,16 @@ public class MaskTextField extends TextField implements DecorationSupport {
                     break;
                 }
             }
+            
+           // caret go to last position all times
+           selectRange(start, start);
+
+           // this code solution -> When user select all text and caret is in end line, text is lost 
+           if ( (caretStart == getInputMask().length()) && (start == 0) && (!text.isEmpty()) && (caretStart == caret)  && (caretStart == end) )
+           {
+        	   this.replaceText(start, start, text);
+           }
+           
         }
         else {
             super.replaceText(start, end, text);
